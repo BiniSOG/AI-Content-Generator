@@ -13,7 +13,19 @@ The format is **what broke → what I tried → what fixed it or how I worked ar
 - **Fix:** Vertical FontSize went to 9, with the safe-area margin kept (`pipeline/assemble.py`). The SRT itself is split at 40 characters per line, 2 lines per cue (`pipeline/subtitles.py`).
 - **Evidence:** the frame check of `film_9x16.mp4` in the offline test.
 
-### F03: TODO(you), the first real failure from your run
+### F03: Gemini text model overloaded at the smoke test (HTTP 503)
+- **What broke:** The first `python run.py smoke` got a ReadTimeout on `gemini-3.8-flash`, then three HTTP 503 errors: "This model is currently experiencing high demand… try again later." The retry with backoff (4/8/16/32 s) ran out, so the text check failed. TTS (`gemini-3.8-flash-tts`) and FLUX.2 klein worked in the same run.
+- **Tried:** the built-in retries. Waiting doesn't help a pipeline that has to run now.
+- **Fix:** a model fallback chain configured in the storyboard (`models.text_fallbacks`, `models.tts_fallbacks`). Each model gets 2 attempts and then the next one is tried. The log line records the model actually used and the `requested_model`, so a fallback is visible in runs.jsonl. The fallback models came from the list the smoke test printed, so they're confirmed to exist for this key.
+- **Evidence:** the smoke lines in runs.jsonl with `status: error, attempts: 4`; `pipeline/providers.py::_gemini_post`.
+
+### F04: FLUX.1 schnell on Cloudflare rejects `seed`
+- **What broke:** The fallback image model returned HTTP 400: "Additional or unevaluated properties '/seed' at '/' not allowed".
+- **Fix:** The seed is no longer sent to schnell. The log stores `seed: null` with `requested_seed` and `seed_supported: false`.
+- **Consequence:** A keyframe made by the fallback model is **not seed-reproducible**. That's one more reason FLUX.2 klein, which takes a seed and reference images, is the primary model.
+- **Evidence:** the smoke log line for `@cf/black-forest-labs/flux-1-schnell`, status error, HTTP 400.
+
+### F05: TODO(you), the next real failure from your run
 - **What broke:**
 - **Tried:**
 - **Fix / workaround:**

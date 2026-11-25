@@ -10,7 +10,9 @@
   "language": {"narration": "am", "narration_name": "Amharic", "subtitles": "en"},
   "models": {
     "text": "gemini-3.8-flash",
+    "text_fallbacks": ["gemini-3.7-flash", "gemini-3.5-flash", "gemini-2.5-flash"],
     "tts": "gemini-3.8-flash-tts",
+    "tts_fallbacks": ["gemini-3.8-flash-lite-tts", "gemini-3.1-flash-tts-preview", "gemini-2.5-flash-preview-tts"],
     "image": "@cf/black-forest-labs/flux-2-klein-4b",
     "image_alt": "@cf/black-forest-labs/flux-1-schnell",
     "video": "Wan-AI/Wan2.2-TI2V-5B-Diffusers",

@@ -14,18 +14,53 @@ from .common import CallFailed, http_call, need_env, say
 GEMINI = "https://generativelanguage.googleapis.com/v1beta"
 
 
+def _fallbacks(model: str) -> list[str]:
+    """Primary model first, then the fallbacks listed in storyboard.json models.text_fallbacks /
+    models.tts_fallbacks. Used when a model is overloaded (HTTP 503) or rate-limited."""
+    from .common import STORYBOARD
+    try:
+        m = json.loads(STORYBOARD.read_text(encoding="utf-8"))["models"]
+    except Exception:
+        return [model]
+    for primary, alts in ((m.get("text"), m.get("text_fallbacks", [])), (m.get("tts"), m.get("tts_fallbacks", []))):
+        if model == primary:
+            return [model] + [a for a in alts if a != model]
+    return [model]
+
+
+def _gemini_post(model: str, body: dict, *, log: dict, timeout: int):
+    """POST to the first model in the fallback chain that answers. Each model gets 2 attempts
+    (the last one gets 4) before moving on; every attempt chain is logged under the model it used.
+    Returns (response, model_used)."""
+    key = need_env("GEMINI_API_KEY")
+    chain = _fallbacks(model)
+    last = None
+    for i, m in enumerate(chain):
+        is_last = i == len(chain) - 1
+        try:
+            r = http_call("POST", f"{GEMINI}/models/{m}:generateContent",
+                          headers={"x-goog-api-key": key, "Content-Type": "application/json"},
+                          json=body, timeout=timeout, max_attempts=4 if is_last else 2,
+                          log={**log, "model": m, "extra": {"requested_model": model}})
+            if m != model:
+                say(log.get("stage", "gemini"), f"used fallback model {m} (requested {model})")
+            return r, m
+        except CallFailed as e:
+            last = e
+            if not is_last:
+                say(log.get("stage", "gemini"), f"{m} unavailable ({str(e)[:60]}); trying {chain[i+1]}")
+    raise last
+
+
 # ---------------------------------------------------------------- Gemini text
 def gemini_text(prompt: str, *, model: str, stage: str, shot: str | None = None,
                 cache_key: str | None = None, temperature: float = 0.4) -> str:
-    key = need_env("GEMINI_API_KEY")
     body = {"contents": [{"parts": [{"text": prompt}]}],
             "generationConfig": {"temperature": temperature}}
-    r = http_call("POST", f"{GEMINI}/models/{model}:generateContent",
-                  headers={"x-goog-api-key": key, "Content-Type": "application/json"},
-                  json=body,
-                  log=dict(stage=stage, shot=shot, provider="gemini", model=model,
-                           params={"temperature": temperature, "prompt_chars": len(prompt)},
-                           seed=None, cache_key=cache_key, units=len(prompt) / 4, unit="input_tokens_est"))
+    r, _ = _gemini_post(model, body, timeout=90,
+                        log=dict(stage=stage, shot=shot, provider="gemini",
+                                 params={"temperature": temperature, "prompt_chars": len(prompt)},
+                                 seed=None, cache_key=cache_key, units=len(prompt) / 4, unit="input_tokens_est"))
     data = r.json()
     try:
         return "".join(p.get("text", "") for p in data["candidates"][0]["content"]["parts"]).strip()
@@ -44,7 +79,6 @@ def gemini_list_models() -> list[str]:
 # ---------------------------------------------------------------- Gemini TTS
 def gemini_tts(text: str, *, model: str, voice: str, style: str | None, out_wav: Path,
                stage: str = "narration", shot: str | None = None, cache_key: str | None = None) -> Path:
-    key = need_env("GEMINI_API_KEY")
     spoken = f"{style}\n\n{text}" if style else text
     body = {
         "contents": [{"parts": [{"text": spoken}]}],
@@ -53,13 +87,11 @@ def gemini_tts(text: str, *, model: str, voice: str, style: str | None, out_wav:
             "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": voice}}},
         },
     }
-    r = http_call("POST", f"{GEMINI}/models/{model}:generateContent",
-                  headers={"x-goog-api-key": key, "Content-Type": "application/json"},
-                  json=body, timeout=240,
-                  log=dict(stage=stage, shot=shot, provider="gemini", model=model,
-                           params={"voice": voice, "style": style, "chars": len(text)},
-                           seed=None, cache_key=cache_key, output=str(out_wav),
-                           units=len(text), unit="chars"))
+    r, _ = _gemini_post(model, body, timeout=180,
+                        log=dict(stage=stage, shot=shot, provider="gemini",
+                                 params={"voice": voice, "style": style, "chars": len(text)},
+                                 seed=None, cache_key=cache_key, output=str(out_wav),
+                                 units=len(text), unit="chars"))
     data = r.json()
     try:
         part = next(p for p in data["candidates"][0]["content"]["parts"] if "inlineData" in p)
@@ -102,7 +134,10 @@ def cf_image(prompt: str, *, model: str, seed: int, out_png: Path, width: int = 
             fields[f"input_image_{i}"] = (ref.name, ref.read_bytes(), "image/png")
         r = http_call("POST", url, headers=headers, files=fields, log=log)
     else:
-        body = {"prompt": prompt, "seed": seed, "steps": min(steps, 8)}
+        # FLUX.1 schnell on Workers AI rejects a "seed" field (HTTP 400), so its outputs are
+        # not seed-reproducible; the log records seed=None for it (see FAILURES.md).
+        body = {"prompt": prompt, "steps": min(steps, 8)}
+        log = {**log, "seed": None, "extra": {"requested_seed": seed, "seed_supported": False}}
         r = http_call("POST", url, headers=headers, json=body, log=log)
 
     ctype = r.headers.get("Content-Type", "")
