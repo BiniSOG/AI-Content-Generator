@@ -1,0 +1,10 @@
+{
+  "_note": "List-price EQUIVALENTS for the COSTS.md table. We pay $0 on free tiers. VERIFY each number against the provider's pricing page on the day you run and record what you found in COSTS.md. Units must match the 'unit' field the pipeline logs.",
+  "models": {
+    "@cf/black-forest-labs/flux-2-klein-4b": {"unit": "image", "usd_per_unit": 0.003, "source": "VERIFY: Cloudflare Workers AI pricing (neurons -> USD)"},
+    "@cf/black-forest-labs/flux-1-schnell": {"unit": "image", "usd_per_unit": 0.0011, "source": "VERIFY: Cloudflare Workers AI pricing (neurons -> USD)"},
+    "gemini-3.8-flash-tts": {"unit": "chars", "usd_per_unit": 0.00004, "source": "VERIFY: Gemini API pricing, TTS output audio tokens"},
+    "gemini-3.8-flash": {"unit": "input_tokens_est", "usd_per_unit": 0.0000003, "source": "VERIFY: Gemini API pricing"},
+    "kaggle-t4x2": {"unit": "gpu_s", "usd_per_unit": 0.000194, "source": "VERIFY: comparable on-demand T4 price (~$0.35/GPU-hour x2 GPUs)"}
+  }
+}

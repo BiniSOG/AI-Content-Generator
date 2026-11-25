@@ -1,0 +1,153 @@
+{
+  "version": 1,
+  "title": "The Smoke Still Finds Me",
+  "logline": "A woman far from home remembers how her grandmother taught her the coffee ceremony, and learns that it was never about the coffee.",
+  "audience": {
+    "who": "TODO(you): e.g. young Ethiopians aged 18-30 living away from their family's home town or abroad",
+    "where": "TODO(you): e.g. on a phone, vertical, TikTok / Instagram / YouTube Shorts, sound on",
+    "feel": "TODO(you): e.g. the urge to call a grandparent today"
+  },
+  "language": {"narration": "am", "narration_name": "Amharic", "subtitles": "en"},
+  "models": {
+    "text": "gemini-3.8-flash",
+    "tts": "gemini-3.8-flash-tts",
+    "image": "@cf/black-forest-labs/flux-2-klein-4b",
+    "image_alt": "@cf/black-forest-labs/flux-1-schnell",
+    "video": "Wan-AI/Wan2.2-TI2V-5B-Diffusers",
+    "music": "ACE-Step-1.5"
+  },
+  "style": {
+    "block": "hand-painted gouache illustration, warm earthy palette of ochre, terracotta, cream and deep green, soft golden morning light, visible paper grain, gentle brush texture, intimate and nostalgic, subject centred in frame, no text, no letters",
+    "negative": "photorealistic, 3d render, text, watermark, extra fingers, deformed hands, harsh contrast, neon",
+    "golden_ref": null
+  },
+  "characters": [
+    {
+      "id": "etenesh",
+      "name": "Etenesh (grandmother)",
+      "description": "Etenesh, an elderly Ethiopian woman in her seventies, round kind face with deep smile lines, short grey hair under a white cotton netela shawl with a thin green-yellow-red woven border, long white habesha dress, small silver cross pendant",
+      "real_person": false,
+      "ref_seed": 1101
+    },
+    {
+      "id": "liya",
+      "name": "Liya (granddaughter, age 10)",
+      "description": "Liya, a ten-year-old Ethiopian girl, braided hair tied back, round face, big curious eyes, mustard-yellow cardigan over a simple white dress",
+      "real_person": false,
+      "ref_seed": 2202
+    }
+  ],
+  "voice": {"name": "Kore", "style": "Speak slowly and warmly, like a woman remembering her grandmother. Calm, unhurried, intimate.", "cloned": false},
+  "shots": [
+    {
+      "id": "s01", "beat": "Where we are",
+      "reason": "Establishing shot: the audience must know this is a highland village at dawn before we meet anyone.",
+      "shot_size": "extreme_wide", "duration_s": 6, "characters": [],
+      "image_prompt": "extreme wide shot of a small Ethiopian highland village at dawn, round thatched tukul houses, tall eucalyptus trees, morning mist over green hills, thin smoke rising from one house",
+      "seed": 11,
+      "motion": {"mode": "wan", "kenburns": "pan_right", "video_prompt": "mist drifts slowly across the hills, smoke rises gently, camera pans slowly right"},
+      "narration": {"en": "In my grandmother's village, the day began before the sun."}
+    },
+    {
+      "id": "s02", "beat": "Meet her",
+      "reason": "Medium shot introduces Etenesh doing the ritual, so the first face we see is tied to the coffee.",
+      "shot_size": "medium", "duration_s": 7, "characters": ["etenesh"],
+      "image_prompt": "medium shot, Etenesh sitting on a low wooden stool inside a warm hut, roasting green coffee beans in a flat iron pan over a small charcoal stove, fresh green grass spread on the floor",
+      "seed": 22,
+      "motion": {"mode": "kenburns", "kenburns": "zoom_in"},
+      "narration": {"en": "Every morning, Etenesh roasted coffee over charcoal, the way her mother taught her."}
+    },
+    {
+      "id": "s03", "beat": "The senses",
+      "reason": "Close-up on the beans gives the sound and smell a picture; it is the detail people remember.",
+      "shot_size": "close_up", "duration_s": 6, "characters": [],
+      "image_prompt": "close-up of coffee beans turning dark brown in a flat iron pan over glowing charcoal, curls of white smoke, warm firelight",
+      "seed": 33,
+      "motion": {"mode": "wan", "kenburns": "zoom_in", "video_prompt": "smoke curls upward slowly, embers glow and flicker, static camera"},
+      "narration": {"en": "She said you could hear when the beans were ready. They crackle, like they are laughing."}
+    },
+    {
+      "id": "s04", "beat": "Sharing the smoke",
+      "reason": "Introduces Liya and the first contact between the two: the smoke is passed to her.",
+      "shot_size": "medium", "duration_s": 7, "characters": ["etenesh", "liya"],
+      "image_prompt": "medium shot, Etenesh holding the smoking roasting pan toward Liya, Liya leaning in with closed eyes to smell the smoke, both smiling, inside the warm hut",
+      "seed": 44,
+      "motion": {"mode": "kenburns", "kenburns": "pan_left"},
+      "narration": {"en": "She carried the smoke around the room, so everyone could greet it."}
+    },
+    {
+      "id": "s05", "beat": "The hands",
+      "reason": "Close-up on old hands grinding: years of repetition shown, not told.",
+      "shot_size": "close_up", "duration_s": 7, "characters": ["etenesh"],
+      "image_prompt": "close-up of an old woman's wrinkled hands grinding roasted coffee beans in a carved wooden mortar with a metal pestle, white netela sleeve with green-yellow-red border",
+      "seed": 55,
+      "motion": {"mode": "kenburns", "kenburns": "zoom_in"},
+      "narration": {"en": "I watched her hands. Hands that had done this ten thousand times."}
+    },
+    {
+      "id": "s06", "beat": "The first cup",
+      "reason": "The high pour from the jebena is the iconic image of the ceremony and the visual peak of the first half.",
+      "shot_size": "medium_close_up", "duration_s": 6, "characters": ["etenesh"],
+      "image_prompt": "medium close-up, Etenesh pouring dark coffee from a black clay jebena pot in a high thin stream into small white handleless cups on a wooden tray, steam rising",
+      "seed": 66,
+      "motion": {"mode": "wan", "kenburns": "zoom_out", "video_prompt": "a thin stream of coffee pours steadily into a small cup, steam rises, camera holds still"},
+      "narration": {"en": "The first cup is called abol. Strong, like the morning."}
+    },
+    {
+      "id": "s07", "beat": "The handover",
+      "reason": "Turning point: the grandmother passes the jebena to Liya. The line of dialogue carries the theme.",
+      "shot_size": "close_up", "duration_s": 9, "characters": ["etenesh", "liya"],
+      "image_prompt": "close-up, Etenesh's old hands gently guiding Liya's small hands as Liya holds the black clay jebena for the first time, warm light, faces softly out of focus behind",
+      "seed": 77,
+      "motion": {"mode": "kenburns", "kenburns": "zoom_in"},
+      "narration": {"en": "One day she put the jebena in my hands. Slowly, she said. Coffee is not about the coffee."}
+    },
+    {
+      "id": "s08", "beat": "What it is really about",
+      "reason": "Wide shot answers her line: the neighbours who come. The film's meaning is the people.",
+      "shot_size": "wide", "duration_s": 7, "characters": ["etenesh", "liya"],
+      "image_prompt": "wide shot inside the warm hut, Etenesh and Liya with four neighbours sitting on low stools in a circle, holding small coffee cups, talking and laughing, popcorn in a basket, morning light through the door",
+      "seed": 88,
+      "motion": {"mode": "kenburns", "kenburns": "pan_right"},
+      "narration": {"en": "It is about who comes to sit with you."}
+    },
+    {
+      "id": "s09", "beat": "Now",
+      "reason": "The empty stool tells us she is gone without saying it; the narrator now keeps the ritual alive.",
+      "shot_size": "medium", "duration_s": 9, "characters": [],
+      "image_prompt": "medium shot of a small modern apartment kitchen at dawn, a flat iron pan of coffee beans smoking on a small stove, an empty low wooden stool beside it with a white netela shawl with green-yellow-red border folded on it, soft window light",
+      "seed": 99,
+      "motion": {"mode": "kenburns", "kenburns": "zoom_out"},
+      "narration": {"en": "Now I roast coffee far from home. And every morning, the smoke still finds me. So does she.", "lead_in_s": 0.8}
+    }
+  ],
+  "music": {
+    "caption": "gentle Ethiopian-inspired instrumental underscore, warm plucked lyre in the style of a krar, soft hand drum, slow melancholic tizita mood, sparse and intimate, soft pads, no lead melody, nostalgic, acoustic, instrumental",
+    "bpm": 72,
+    "key": "C minor",
+    "duration_s": 90,
+    "candidates": 3,
+    "seeds": [101, 202, 303],
+    "chosen": null,
+    "chosen_reason": "",
+    "music_db": -6,
+    "duck": {"threshold": 0.02, "ratio": 6, "attack_ms": 300, "release_ms": 1500},
+    "cues": [
+      {"at_shot": "s01", "intent": "enter softly from silence, establish warmth"},
+      {"at_shot": "s07", "intent": "lift slightly at the handover"},
+      {"at_shot": "s09", "intent": "thin out, let the last line breathe, resolve into the end card"}
+    ]
+  },
+  "end_card": {
+    "text": "Made with AI",
+    "credits": [
+      "Images: FLUX (Cloudflare Workers AI)",
+      "Motion: Wan 2.2 / FFmpeg",
+      "Voice: Gemini TTS (synthetic voice)",
+      "Music: ACE-Step 1.5",
+      "A fictional story inspired by Ethiopian coffee ceremonies"
+    ],
+    "duration_s": 3
+  },
+  "output": {"fps": 24, "horizontal": [1280, 720], "vertical": [720, 1280], "target_lufs": -14, "true_peak_db": -1}
+}

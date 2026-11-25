@@ -1,0 +1,14 @@
+# secrets
+.env
+kaggle.json
+*.key
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# large / temporary media (final films + keyframes are kept; scratch is not)
+outputs/tmp/
+outputs/**/*.part
