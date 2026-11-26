@@ -86,3 +86,12 @@ The film costs **$0** on free tiers: the Gemini API free tier, Cloudflare Worker
 ## Secrets
 
 Keys live only in `.env`, which is gitignored. `.env.example` lists the names. Nothing in `runs.jsonl` contains a key.
+
+## Publish the finished film (Vercel)
+
+The pipeline runs on your computer (and Kaggle); only the finished film goes on the web.
+
+1. `python run.py film` until both films exist in `outputs/final/`.
+2. `python tools/build_site.py` builds `site/` (a static page with both films, every shot and how it was made). Open `site/index.html` in a browser to check it.
+3. Commit and push `site/`, then on vercel.com: **Add New → Project → import this GitHub repository → Root Directory `site` → Framework Preset "Other" → Deploy**. No build command and no environment variables are needed; no API keys go to Vercel.
+4. After a new film: run step 2 again, commit and push `site/`, and Vercel redeploys by itself.
