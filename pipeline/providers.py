@@ -132,9 +132,33 @@ def gemini_tts(text: str, *, model: str, voice: str, style: str | None, out_wav:
 
 
 # ---------------------------------------------------------------- Cloudflare FLUX
-def cf_image(prompt: str, *, model: str, seed: int, out_png: Path, width: int = 1024, height: int = 1024,
+FLAGGED_SEED_STEPS = (0, 1000, 2000)  # deterministic alternate seeds tried when an output is flagged
+
+
+def cf_image(prompt: str, *, model: str, seed: int, out_png: Path, **kw) -> Path:
+    """Workers AI sometimes flags a harmless output (HTTP 400, code 3030 "Your output has been
+    flagged"). The same prompt+seed gives the same image, so a plain retry fails again; instead we
+    retry with seed+1000, seed+2000. The sequence is fixed, so the result is still reproducible,
+    and the seed actually used is logged (extra.seed_used)."""
+    last = None
+    for step in FLAGGED_SEED_STEPS:
+        try:
+            out = _cf_image_once(prompt, model=model, seed=seed + step, requested_seed=seed,
+                                 out_png=out_png, **kw)
+            if step:
+                say(kw.get("stage", "keyframes"), f"output was flagged at seed {seed}; used seed {seed + step}")
+            return out
+        except CallFailed as e:
+            if "3030" not in str(e) or "flux-2" not in model:  # schnell ignores seed: nothing to vary
+                raise
+            last = e
+            say(kw.get("stage", "keyframes"), f"output flagged by Cloudflare's filter at seed {seed + step}; trying another seed")
+    raise last
+
+
+def _cf_image_once(prompt: str, *, model: str, seed: int, out_png: Path, width: int = 1024, height: int = 1024,
              steps: int = 4, refs: list[Path] | None = None, stage: str = "keyframes",
-             shot: str | None = None, cache_key: str | None = None) -> Path:
+             shot: str | None = None, cache_key: str | None = None, requested_seed: int | None = None) -> Path:
     acct = need_env("CF_ACCOUNT_ID")
     token = need_env("CF_API_TOKEN")
     url = f"https://api.cloudflare.com/client/v4/accounts/{acct}/ai/run/{model}"
@@ -142,7 +166,8 @@ def cf_image(prompt: str, *, model: str, seed: int, out_png: Path, width: int = 
     params = {"width": width, "height": height, "steps": steps,
               "refs": [str(p.name) for p in (refs or [])], "prompt_chars": len(prompt)}
     log = dict(stage=stage, shot=shot, provider="cloudflare", model=model, params=params, seed=seed,
-               cache_key=cache_key, output=str(out_png), units=1, unit="image")
+               cache_key=cache_key, output=str(out_png), units=1, unit="image",
+               extra={"requested_seed": requested_seed if requested_seed is not None else seed, "seed_used": seed})
 
     if "flux-2" in model:
         # FLUX.2 on Workers AI takes multipart form-data; reference images go in input_image_N.
@@ -155,7 +180,7 @@ def cf_image(prompt: str, *, model: str, seed: int, out_png: Path, width: int = 
         # FLUX.1 schnell on Workers AI rejects a "seed" field (HTTP 400), so its outputs are
         # not seed-reproducible; the log records seed=None for it (see FAILURES.md).
         body = {"prompt": prompt, "steps": min(steps, 8)}
-        log = {**log, "seed": None, "extra": {"requested_seed": seed, "seed_supported": False}}
+        log = {**log, "seed": None, "extra": {"requested_seed": seed, "seed_used": None, "seed_supported": False}}
         r = http_call("POST", url, headers=headers, json=body, log=log)
 
     ctype = r.headers.get("Content-Type", "")

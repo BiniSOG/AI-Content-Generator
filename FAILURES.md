@@ -26,7 +26,13 @@ The format is **what broke → what I tried → what fixed it or how I worked ar
 - **Consequence:** A keyframe made by the fallback model is **not seed-reproducible**. That's one more reason FLUX.2 klein, which takes a seed and reference images, is the primary model.
 - **Evidence:** the smoke log line for `@cf/black-forest-labs/flux-1-schnell`, status error, HTTP 400.
 
-### F05: TODO(you), the next real failure from your run
+### F05: FLUX.2 klein output flagged by Cloudflare's safety filter (code 3030)
+- **What broke:** At the smoke test, `@cf/black-forest-labs/flux-2-klein-4b` returned HTTP 400 for "a clay coffee pot on a wooden table" in the gouache style: `AiError: Your output has been flagged. Please choose another prompt / input image combination` (code 3030). FLUX.1 schnell drew the same scene without a problem.
+- **Tried:** retrying. The same prompt and seed give the same image, so it gets flagged again. The filter checks the *output*, so this is a false positive on that one image, not a problem with the prompt.
+- **Fix:** `cf_image` catches code 3030 on FLUX.2 and tries again at seed+1000, then seed+2000. The sequence is fixed, so the keyframe stays reproducible. runs.jsonl records `requested_seed` and `seed_used`. If all three seeds are flagged, the keyframes stage falls back to `image_alt` as before.
+- **Evidence:** the smoke line in runs.jsonl with `status: error` and code 3030; `pipeline/providers.py::cf_image`.
+
+### F06: TODO(you), the next real failure from your run
 - **What broke:**
 - **Tried:**
 - **Fix / workaround:**
