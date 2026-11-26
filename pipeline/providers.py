@@ -32,6 +32,20 @@ def _fallbacks(model: str) -> list[str]:
 # this process, so a run of 9 lines doesn't re-try the same overloaded models 9 times.
 _BUSY_UNTIL: dict[str, float] = {}
 BUSY_COOLDOWN_S = 180
+# models whose DAILY quota is used up: never retried in this run (waiting minutes cannot help)
+_EXHAUSTED: set[str] = set()
+
+
+class QuotaExhausted(CallFailed):
+    pass
+
+
+def _quota_info(e: CallFailed) -> tuple[bool, float | None]:
+    """(daily_quota_used_up, retry_after_s) from a Gemini 429 body."""
+    body = getattr(e, "body", "") or ""
+    daily = "PerDay" in body or "per day" in body.lower()
+    m = re.search(r'"retryDelay":\s*"(\d+(?:\.\d+)?)s"', body)
+    return daily, (float(m.group(1)) if m else None)
 
 
 def _gemini_post(model: str, body: dict, *, log: dict, timeout: int, rounds: int = 4,
@@ -47,8 +61,10 @@ def _gemini_post(model: str, body: dict, *, log: dict, timeout: int, rounds: int
     - Models answering a non-retryable 4xx are dropped. Returns (response, model_used)."""
     import time
     key = need_env("GEMINI_API_KEY")
-    chain = [m for m in _fallbacks(model) if m not in (exclude or set())]
+    chain = [m for m in _fallbacks(model) if m not in (exclude or set()) and m not in _EXHAUSTED]
     if not chain:
+        if all(m in _EXHAUSTED or m in (exclude or set()) for m in _fallbacks(model)) and _EXHAUSTED:
+            raise QuotaExhausted(_quota_message(model))
         raise CallFailed(f"no models left to try (excluded: {', '.join(sorted(exclude or []))})")
     stage = log.get("stage", "gemini")
     waits = [5, 15, 30]
@@ -75,12 +91,24 @@ def _gemini_post(model: str, body: dict, *, log: dict, timeout: int, rounds: int
                 last = e
                 errors[m] = str(e)[:160]
                 retryable = e.status is None or e.status == 429 or e.status >= 500
-                if retryable:
+                note = ""
+                if e.status == 429:
+                    daily, delay = _quota_info(e)
+                    if daily:
+                        _EXHAUSTED.add(m)
+                        chain.remove(m)
+                        note = "; DAILY quota used up, skipping it for this run"
+                    else:
+                        _BUSY_UNTIL[m] = time.time() + (delay or BUSY_COOLDOWN_S)
+                elif retryable:
                     _BUSY_UNTIL[m] = time.time() + BUSY_COOLDOWN_S
                 else:
                     chain.remove(m)
-                say(stage, f"{m} unavailable ({str(e)[:90]})" + ("" if retryable else "; dropping it"))
+                    note = "; dropping it"
+                say(stage, f"{m} unavailable ({str(e)[:90]}){note}")
         if not chain:
+            if _EXHAUSTED:
+                raise QuotaExhausted(_quota_message(model))
             break
         if rnd < rounds - 1:
             wait = waits[min(rnd, len(waits) - 1)]
@@ -89,6 +117,13 @@ def _gemini_post(model: str, body: dict, *, log: dict, timeout: int, rounds: int
     summary = "; ".join(f"{m}: {err}" for m, err in errors.items())
     raise CallFailed(f"every model in the chain failed after {rnd + 1} round(s) -- {summary}",
                      status=getattr(last, "status", None))
+
+
+def _quota_message(model: str) -> str:
+    return (f"the daily Gemini free-tier quota is used up for every model in the chain of {model} "
+            f"({', '.join(sorted(_EXHAUSTED))}). Everything generated so far is cached. Run the same "
+            f"command again after the quota resets (midnight Pacific time), or enable billing on the "
+            f"API key in Google AI Studio.")
 
 
 # ---------------------------------------------------------------- Gemini text
@@ -169,13 +204,23 @@ def gemini_tts(text: str, *, model: str, voice: str, style: str | None, out_wav:
     # ~0.04 s per character is very fast speech; less than that means the audio is truncated.
     min_s = max(0.8, min(len(text) * 0.04, 4.0))
     tried: set[str] = set()
+    backup = out_wav.with_suffix(".rejected.wav")
+    backup.unlink(missing_ok=True)
     while True:
-        r, used = _gemini_post(model, body, timeout=180, exclude=tried,
+        try:
+            r, used = _gemini_post(model, body, timeout=180, exclude=tried,
                                log=dict(stage=stage, shot=shot, provider="gemini",
                                         params={"voice": voice, "style": style, "chars": len(text),
                                                 "language": lang_name},
                                         seed=None, cache_key=cache_key, output=str(out_wav),
                                         units=len(text), unit="chars"))
+        except CallFailed:
+            if backup.exists():  # nothing better is available: keep what the check doubted
+                backup.replace(out_wav)
+                say(stage, f"no other TTS model available; KEEPING the audio the check doubted: {out_wav.name}. "
+                           f"Listen to it.")
+                return out_wav
+            raise
         _write_tts_audio(r.json(), out_wav)
         dur, mx = audio_stats(out_wav)
         if is_silent(out_wav, min_s=min_s):
@@ -186,7 +231,10 @@ def gemini_tts(text: str, *, model: str, voice: str, style: str | None, out_wav:
                 return out_wav
         tried.add(used)
         say(stage, f"{used}: {problem}; trying the next TTS model")
-        out_wav.unlink(missing_ok=True)
+        if check and not is_silent(out_wav, min_s=min_s) and not backup.exists():
+            out_wav.replace(backup)
+        else:
+            out_wav.unlink(missing_ok=True)
 
 
 def _write_tts_audio(data: dict, out_wav: Path) -> None:

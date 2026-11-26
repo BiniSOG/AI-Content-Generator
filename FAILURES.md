@@ -67,7 +67,12 @@ The format is **what broke → what I tried → what fixed it or how I worked ar
   5. Subtitles are back to English only. Every narration line is checked by Gemini listening to it; audio in which anything but Amharic is heard is regenerated with the next TTS model.
 - **Evidence:** the five-figure crop vs fit test frame; `[keyframes] sNN: counted N people` and `[narration] sNN: language check OK` lines.
 
-### F10: TODO(you), the next real failure from your run
+### F10: false language rejections burned the daily TTS quota
+- **What broke:** `film` died at s06 with HTTP 429 "You exceeded your current quota" on every TTS model. Before that, the new language check had rejected two correct Amharic recordings (`heard: am; other words: -`): Gemini answered with the language *code* `am`, and the check only accepted the word "Amharic". Each false rejection cost one more TTS call, and the backoff rounds kept calling models whose *daily* quota was gone.
+- **Fix:** the check accepts the code, the English name or the Amharic name (am / amh / Amharic / አማርኛ), and only rejects when another language is actually named or other words were heard. A doubted recording is kept as a backup and used if no other TTS model can answer. A 429 whose body names a per-day quota marks that model as exhausted for the run (no retry rounds); a per-minute 429 waits for Gemini's `retryDelay`. When every model's daily quota is gone, narration stops right away, lists the missing shots, and says that the same command continues from the cache after the reset. `voice.check_language: false` turns the check off to save text-model quota.
+- **Evidence:** the narration log of 2026-11-26.
+
+### F11: TODO(you), the next real failure from your run
 - **What broke:**
 - **Tried:**
 - **Fix / workaround:**

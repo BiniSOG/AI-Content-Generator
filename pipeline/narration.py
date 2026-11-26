@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 
 from .common import audio_stats, cache_key, cached, duration_of, is_silent, link_current, load_storyboard, out_dir, say
-from .providers import gemini_inspect, gemini_tts
+from .providers import QuotaExhausted, gemini_inspect, gemini_tts
 from .common import CallFailed
 
 STAGE = "narration"
@@ -27,6 +27,8 @@ def run(sb: dict | None = None, only: set[str] | None = None) -> list[str]:
     manifest_path = d / "manifest.json"
     manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
     changed = []
+    check_on = sb.get("voice", {}).get("check_language", True)
+    missing = []
     for s in sb["shots"]:
         text = s["narration"]["en"] if lang == "en" else s["narration"]["spoken"]
         key = cache_key(text, voice, style, model, lang_name, "tts-v2")
@@ -37,14 +39,24 @@ def run(sb: dict | None = None, only: set[str] | None = None) -> list[str]:
             target.unlink()
         if (only is None or s["id"] in only) and not cached(target):
             say(STAGE, f"{s['id']}: generating ({len(text)} chars)")
-            gemini_tts(text, model=model, voice=voice, style=style, out_wav=target,
-                       shot=s["id"], cache_key=key, lang_name=lang_name,
-                       check=None if lang == "en" else _language_check(sb, s["id"], text, lang_name))
-            changed.append(s["id"])
+            try:
+                gemini_tts(text, model=model, voice=voice, style=style, out_wav=target,
+                           shot=s["id"], cache_key=key, lang_name=lang_name,
+                           check=None if lang == "en" or not check_on else _language_check(sb, s["id"], text, lang_name))
+                changed.append(s["id"])
+            except QuotaExhausted as e:
+                missing.append(s["id"])
+                say(STAGE, f"{s['id']}: not generated: {str(e)[:160]}")
+                continue
         if cached(target):
             link_current(target, d / f"{s['id']}.wav")
             manifest[s["id"]] = {"file": target.name, "key": key, "duration_s": round(duration_of(target), 3)}
     manifest_path.write_text(json.dumps(manifest, indent=2))
+    if missing:
+        raise SystemExit(f"[narration] {len(changed)} line(s) made this run; still missing: {', '.join(missing)}.\n"
+                         f"The daily Gemini TTS free quota is used up. Everything made so far is cached, so the "
+                         f"same command continues where it stopped once the quota resets (midnight Pacific "
+                         f"time), or right away if you enable billing for the API key in Google AI Studio.")
     total = sum(v["duration_s"] for k, v in manifest.items() if any(s["id"] == k for s in sb["shots"]))
     say(STAGE, f"{len(changed)} regenerated" + (f": {', '.join(changed)}" if changed else " (all cached)")
         + f"; total narration {total:.1f}s")
@@ -56,7 +68,8 @@ def _language_check(sb: dict, sid: str, text: str, lang_name: str):
     the narration language is spoken (e.g. the model read its English directions aloud)."""
     def check(wav) -> str | None:
         q = (f"Listen to this narration. It should contain ONLY this {lang_name} text, spoken in {lang_name}:\n"
-             f"{text}\n\nAnswer as JSON: {{\"spoken_language\": \"<main language heard>\", "
+             f"{text}\n\nAnswer as JSON: {{\"spoken_language\": \"<English name of the main language heard, "
+             f"e.g. Amharic>\", "
              f"\"other_language_heard\": true or false, \"other_words\": \"<any words heard in another "
              f"language, e.g. English, or empty>\"}}")
         try:
@@ -65,14 +78,20 @@ def _language_check(sb: dict, sid: str, text: str, lang_name: str):
         except CallFailed as e:
             say(STAGE, f"{sid}: could not run the language check ({str(e)[:80]}); keeping the audio, listen to it")
             return None
-        lang_ok = lang_name.lower() in str(a.get("spoken_language", "")).lower()
-        if not lang_ok or a.get("other_language_heard"):
+        heard = str(a.get("spoken_language", "")).strip().lower()
+        names = {lang_name.lower(), sb["language"]["narration"].lower()} | _LANG_ALIASES.get(sb["language"]["narration"], set())
+        lang_ok = heard in names or any(n in heard for n in names if len(n) > 3)
+        other = str(a.get("other_words") or "").strip(" -")
+        if not lang_ok or (a.get("other_language_heard") and other):
             return (f"audio is not purely {lang_name} (heard: {a.get('spoken_language')}; "
                     f"other words: {a.get('other_words') or '-'})")
         say(STAGE, f"{sid}: language check OK ({lang_name} only)")
         return None
     return check
 
+
+_LANG_ALIASES = {"am": {"am", "amh", "amharic", "አማርኛ"}, "ti": {"ti", "tir", "tigrinya", "ትግርኛ"},
+                 "om": {"om", "orm", "oromo", "afaan oromoo"}}
 
 _SCRIPT_RANGES = {"am": ("\u1200", "\u139F"), "ti": ("\u1200", "\u139F")}  # Ethiopic (Ge'ez) script
 

@@ -211,9 +211,10 @@ def log_call(*, stage: str, provider: str, model: str, params: dict, seed, laten
 
 # ---------------------------------------------------------------- HTTP with retries
 class CallFailed(Exception):
-    def __init__(self, msg: str, status: int | None = None):
+    def __init__(self, msg: str, status: int | None = None, body: str = ""):
         super().__init__(msg)
         self.status = status  # HTTP status of the last attempt (None for timeouts/connection errors)
+        self.body = body      # raw response text of the last attempt (e.g. Gemini quota details)
 
 
 def _short_error(r) -> str:
@@ -232,11 +233,13 @@ def http_call(method: str, url: str, *, log: dict, max_attempts: int = 4, timeou
     t0 = time.time()
     last_err = None
     last_status = None
+    last_body = ""
     for attempt in range(1, max_attempts + 1):
         is_last = attempt == max_attempts
         try:
             r = requests.request(method, url, timeout=timeout, **kwargs)
             last_status = r.status_code
+            last_body = r.text[:4000] if r.status_code >= 400 else ""
             if r.status_code == 429 or r.status_code >= 500:
                 last_err = _short_error(r)
                 if is_last:
@@ -262,7 +265,7 @@ def http_call(method: str, url: str, *, log: dict, max_attempts: int = 4, timeou
             say(log.get("stage", "http"), f"attempt {attempt} error ({last_err[:100]}), retrying in {wait}s")
             time.sleep(wait)
     log_call(**log, latency_s=time.time() - t0, status="error", attempts=attempt, error=last_err)
-    raise CallFailed(last_err, status=last_status)
+    raise CallFailed(last_err, status=last_status, body=last_body)
 
 
 # ---------------------------------------------------------------- ffmpeg

@@ -211,6 +211,10 @@
         "cloned": {
           "type": "boolean",
           "const": false
+        },
+        "check_language": {
+          "type": "boolean",
+          "description": "Let Gemini listen to every narration line and reject non-narration-language speech (one extra text-model call per line)"
         }
       }
     },
