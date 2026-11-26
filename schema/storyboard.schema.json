@@ -189,6 +189,11 @@
             "type": "string",
             "minLength": 20,
             "description": "How the reference image is framed (pose, crop, background); default: one full-body figure"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "How many people this character entry is (e.g. 5 for a group); checked on the reference image"
           }
         }
       }
@@ -299,6 +304,13 @@
               "video_prompt": {
                 "type": "string",
                 "description": "Motion and camera only; the image already holds the subject"
+              },
+              "vertical_fit": {
+                "enum": [
+                  "crop",
+                  "blur"
+                ],
+                "description": "9:16 version: crop the centre (default) or fit the whole image over a blurred copy (group shots)"
               }
             }
           },
@@ -331,6 +343,11 @@
                 "maximum": 3
               }
             }
+          },
+          "people_count": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "How many people must be visible; checked with Gemini vision after generation, other seeds tried if wrong"
           }
         }
       }

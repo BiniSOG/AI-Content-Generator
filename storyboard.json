@@ -10,7 +10,7 @@
   "language": {
     "narration": "am",
     "narration_name": "Amharic",
-    "subtitles": "am+en"
+    "subtitles": "en"
   },
   "models": {
     "text": "gemini-3.8-flash",
@@ -35,10 +35,10 @@
     "music": "ACE-Step-1.5"
   },
   "style": {
-    "block": "cinematic film still, realistic documentary photography in the style of a National Geographic story about rural Ethiopia, 35mm film look, warm kerosene-lamp and fire light against deep shadows inside, soft highland light outside, gentle film grain, shallow depth of field, true-to-life Habesha skin tones with natural skin texture, realistic hands with five fingers, main subject centred with the key action in the middle of a square frame, no text, no letters, no watermark",
-    "negative": "cartoon, anime, illustration, painting, 3d render, plastic skin, waxy face, West African clothing, kente cloth, dashiki, savanna grass huts, desert, jungle, palm trees, text, watermark, extra fingers, deformed hands, extra people, floating objects, harsh contrast, neon",
+    "block": "cinematic film still, realistic documentary photography in the style of a National Geographic story about rural Ethiopia, 35mm film look, warm kerosene-lamp and fire light against deep shadows inside, soft highland light outside, gentle film grain, shallow depth of field, true-to-life brown to dark brown Ethiopian skin tones with natural skin texture, realistic hands with five fingers, main subject centred with the key action in the middle of a square frame, no text, no letters, no watermark",
+    "negative": "Arab, Middle Eastern, Indian, light skin, cartoon, anime, illustration, painting, 3d render, plastic skin, waxy face, West African clothing, kente cloth, dashiki, turban, long white robe, savanna grass huts, desert, jungle, palm trees, text, watermark, extra fingers, deformed hands, floating objects, harsh contrast, neon",
     "golden_ref": null,
-    "setting": "Photographed on location in the Amhara highlands of northern Ethiopia, near Gondar; Ethiopian Habesha people of the Amhara region"
+    "setting": "Photographed on location in a rural farming village in the Amhara highlands of Ethiopia, East Africa; Ethiopian people with brown to dark brown skin and tightly coiled black or grey hair"
   },
   "characters": [
     {
@@ -46,8 +46,8 @@
       "name": "Abba Tesfaye (the father)",
       "real_person": false,
       "ref_seed": 5101,
-      "description": "Abba Tesfaye, an elderly Ethiopian Amhara farmer from the Gondar highlands, in his eighties, thin and frail from illness, with the typical facial features of Amhara highlanders: a long narrow face, high forehead, prominent cheekbones and gaunt cheeks, a straight narrow nose with a slightly high bridge, thin lips, a defined jaw, large deep-set dark brown eyes, medium-dark brown skin with a warm reddish-brown undertone and deep wrinkles; short tightly coiled grey-white hair with a receding hairline and a short white beard; wrapped in a thick white handwoven cotton gabi shawl with a thin coloured stripe at the edge, a small silver Ethiopian Orthodox cross pendant on a black cord",
-      "short": "Abba Tesfaye: frail elderly Ethiopian Amhara man, long narrow face, high cheekbones, gaunt cheeks, straight narrow nose, deep-set dark eyes, medium-dark reddish-brown skin, short grey-white coiled hair and short white beard, white handwoven gabi shawl, small silver Orthodox cross",
+      "description": "Abba Tesfaye, an elderly Ethiopian farmer from the Amhara highlands, in his eighties, thin and frail from illness: dark brown skin with deep wrinkles, an Ethiopian face with high cheekbones, gaunt cheeks, a broad forehead and kind, tired dark eyes, very short tightly coiled afro-textured grey hair and short grey stubble on his chin (no long beard); a thick white handwoven Ethiopian cotton gabi with a thin coloured woven border draped over his shoulders over a plain faded shirt, a small silver Ethiopian Orthodox cross on a black cord. He looks like the old farmers in documentary photographs of rural Ethiopia",
+      "short": "Abba Tesfaye: frail elderly Ethiopian farmer, dark brown wrinkled skin, high cheekbones, gaunt cheeks, very short tightly coiled grey hair, short grey stubble, white handwoven Ethiopian gabi over a plain faded shirt",
       "ref_framing": "Waist-up, seated upright on a low carved wooden stool, facing the camera at a slight three-quarter angle, the whole face clearly visible and evenly lit, hands resting on his knees, plain soft warm neutral background"
     },
     {
@@ -55,9 +55,10 @@
       "name": "the five sons",
       "real_person": false,
       "ref_seed": 6202,
-      "description": "Abba Tesfaye's five grown sons, Ethiopian Amhara highland farmers from Gondar aged about 25 to 45, all with the typical facial features of Amhara highlanders: long oval faces, high cheekbones, straight narrow noses, defined jaws, dark brown almond-shaped eyes, medium-brown to medium-dark brown skin with a warm reddish-brown undertone, short black tightly coiled hair; each easy to tell apart: the eldest with a short black beard and a white cotton gabi over his shoulders; the second tall and broad in a brown wool jacket over a white shirt; the third with a thin moustache, a grey shirt and white jodhpur-style trousers; the fourth in a white shirt with a white netela scarf with a green-yellow-red tibeb border; the youngest slim and clean-shaven in a faded blue shirt",
-      "short": "the five sons: Ethiopian Amhara farmers aged 25 to 45, long oval faces, high cheekbones, straight narrow noses, warm reddish-brown skin, short black coiled hair; eldest bearded in a white gabi, second tall in a brown wool jacket, third moustached in a grey shirt, fourth with a tibeb-bordered netela scarf, youngest slim in a faded blue shirt",
-      "ref_framing": "Group portrait of all five standing side by side in one row, eldest on the left and youngest on the right, full body, facing the camera, every face clearly visible, plain soft warm neutral background"
+      "description": "Abba Tesfaye's five grown sons, Ethiopian farmers from the Amhara highlands aged about 25 to 45, all with brown to dark brown skin, Ethiopian faces with high cheekbones, and short tightly coiled afro-textured black hair, looking like young farmers in documentary photographs of rural Ethiopia; each easy to tell apart: (1) the eldest, about 45, a short trimmed black beard, an olive-green army-style jacket; (2) the second, tall and broad, a brown wool jacket over a white shirt; (3) the third, a thin moustache, a grey shirt; (4) the fourth, a white shirt with a white netela scarf with a green-yellow-red tibeb border around his neck; (5) the youngest, about 25, slim and clean-shaven, a faded blue shirt",
+      "short": "the five sons (exactly five men): Ethiopian farmers aged 25 to 45, brown to dark brown skin, high cheekbones, short tightly coiled black hair; (1) eldest, trimmed beard, olive-green jacket; (2) tall, brown wool jacket; (3) thin moustache, grey shirt; (4) white shirt with a tibeb-bordered netela scarf; (5) youngest, slim, faded blue shirt",
+      "ref_framing": "Group portrait of exactly five men standing side by side in one row, shoulder to shoulder, from left to right: the eldest, the second, the third, the fourth, the youngest; full body, facing the camera, all five faces clearly visible, the whole group in the centre of the frame with empty space on both sides, plain soft warm neutral background",
+      "count": 5
     }
   ],
   "voice": {
@@ -105,7 +106,8 @@
         "en": "He knew his time was near. And one thing troubled him more than his illness.",
         "spoken": "ጊዜያቸው እንደቀረበ ያውቁ ነበር። ከሕመማቸው በላይ ግን አንድ ነገር ያሳስባቸው ነበር።",
         "locked": true
-      }
+      },
+      "people_count": 1
     },
     {
       "id": "s03",
@@ -116,17 +118,19 @@
       "characters": [
         "sons"
       ],
-      "image_prompt": "Wide shot in late afternoon in the dusty yard of the family compound, enclosed by a low stone wall and a hedge of candelabra euphorbia: the five sons stand in two groups facing each other and argue; the second son and the third son point at each other with angry faces, the eldest stands with his arms crossed, the fourth shakes his head, the youngest turns away; between the two groups stand two zebu oxen with a wooden maresha plough and yoke; a round thatched house and eucalyptus trees behind them, teff fields and flat-topped mountains in the distance. Eye level, 28mm lens, all five faces visible",
+      "image_prompt": "Wide shot in late afternoon in the dusty yard of the family compound, enclosed by a low stone wall and a hedge of candelabra euphorbia. Exactly five men, the five sons, stand close together in the centre of the yard and argue; from left to right: the eldest (trimmed beard, olive-green jacket) with his arms crossed; the second (tall, brown wool jacket) pointing at the third; the third (moustache, grey shirt) pointing back with an angry face; the fourth (tibeb scarf) shaking his head; the youngest (blue shirt) turning away. Two zebu oxen with a wooden maresha plough stand behind them; a round thatched house and eucalyptus trees behind, teff fields and flat-topped mountains in the distance. Eye level, 28mm lens, all five faces visible",
       "seed": 34,
       "motion": {
         "mode": "kenburns",
-        "kenburns": "pan_left"
+        "kenburns": "pan_left",
+        "vertical_fit": "blur"
       },
       "narration": {
         "en": "His five sons were strong, but they always quarrelled: over the land, over the oxen, over everything.",
         "spoken": "አምስቱ ልጆቻቸው ብርቱዎች ነበሩ፤ ግን ሁልጊዜ ይጣሉ ነበር፦ በመሬቱ፣ በበሬዎቹ፣ በሁሉም ነገር።",
         "locked": true
-      }
+      },
+      "people_count": 5
     },
     {
       "id": "s04",
@@ -138,17 +142,19 @@
         "father",
         "sons"
       ],
-      "image_prompt": "Medium wide shot at night inside a traditional round Amhara house: thick mud-and-straw plastered walls, a central wooden pole holding up the conical thatched roof, the inside of the thatch blackened by smoke: the five sons gather close around their father's wooden alga bed, faces lit by the warm kerosene lamp, serious and quiet; the eldest stands at the head of the bed, the youngest kneels on a sheepskin on the earth floor at the bedside, the other three stand behind near the central pole; Abba Tesfaye, propped up under the white gabi, looks at them. Eye level, 35mm lens, all six faces visible",
+      "image_prompt": "Medium wide shot at night inside a traditional round Amhara house: thick mud-and-straw plastered walls, a central wooden pole holding up the conical thatched roof, the inside of the thatch blackened by smoke. Six people in total: Abba Tesfaye, propped up under the white gabi on his wooden alga bed, looks at his five sons, who gather close around the bed with serious, quiet faces lit by a warm kerosene lamp; from left to right: the eldest standing at the head of the bed, the second and the third standing behind the bed, the fourth standing at the foot of the bed, and the youngest kneeling on a sheepskin on the earth floor at the bedside. Eye level, 35mm lens, all six faces visible, the group in the centre of the frame",
       "seed": 45,
       "motion": {
         "mode": "kenburns",
-        "kenburns": "zoom_in"
+        "kenburns": "zoom_in",
+        "vertical_fit": "blur"
       },
       "narration": {
         "en": "So he called all five of his sons to his bedside.",
         "spoken": "ስለዚህ አምስቱንም ልጆቻቸውን ወደ አልጋቸው አጠገብ ጠሯቸው።",
         "locked": true
-      }
+      },
+      "people_count": 6
     },
     {
       "id": "s05",
@@ -159,7 +165,7 @@
       "characters": [
         "father"
       ],
-      "image_prompt": "Close-up of Abba Tesfaye's frail wrinkled brown hands holding out a thick bundle of about ten straight wooden sticks, each as long as a forearm and as thick as a finger, tied tightly together in the middle with a leather cord; a strong younger hand reaches in from the side to take the bundle. The white gabi blanket below, warm lamp light, dark background, 85mm lens, shallow depth of field, focus on the bundle and the cord",
+      "image_prompt": "Close-up of Abba Tesfaye's frail wrinkled dark brown hands holding out a thick bundle of about ten straight wooden sticks, each as long as a forearm and as thick as a finger, tied tightly together in the middle with a leather cord; a strong younger hand reaches in from the side to take the bundle. The white gabi blanket below, warm lamp light, dark background, 85mm lens, shallow depth of field, focus on the bundle and the cord",
       "seed": 56,
       "motion": {
         "mode": "kenburns",
@@ -180,17 +186,19 @@
       "characters": [
         "sons"
       ],
-      "image_prompt": "Medium shot inside a traditional round Amhara house: thick mud-and-straw plastered walls, a central wooden pole holding up the conical thatched roof, the inside of the thatch blackened by smoke, lit by a kerosene lamp: the eldest son, short black beard and white gabi on his shoulders, holds the tied bundle of sticks with both hands, one hand at each end, and presses it down hard over his raised knee, straining with effort; the bundle bends slightly but does not break; behind him the other four brothers watch, the second son reaching out to try next. 50mm lens",
+      "image_prompt": "Medium shot inside a traditional round Amhara house: thick mud-and-straw plastered walls, a central wooden pole holding up the conical thatched roof, the inside of the thatch blackened by smoke, lit by a kerosene lamp. Five men in total: in front, the eldest son (trimmed beard, olive-green jacket) holds the tied bundle of sticks with both hands, one hand at each end, and presses it down hard over his raised knee, straining with effort; the bundle bends slightly but does not break. Behind him, his four brothers stand close together in one row and watch, from left to right: the second (brown wool jacket), reaching out to try next; the third (grey shirt); the fourth (tibeb scarf); the youngest (blue shirt). 50mm lens, all five faces visible",
       "seed": 67,
       "motion": {
         "mode": "kenburns",
-        "kenburns": "static"
+        "kenburns": "static",
+        "vertical_fit": "blur"
       },
       "narration": {
         "en": "One by one, each son tried with all his strength. No one could break it.",
         "spoken": "አንድ በአንድ እያንዳንዱ ልጅ በሙሉ ኃይሉ ሞከረ። ማንም ሊሰብረው አልቻለም።",
         "locked": true
-      }
+      },
+      "people_count": 5
     },
     {
       "id": "s07",
@@ -202,7 +210,7 @@
         "father",
         "sons"
       ],
-      "image_prompt": "Close-up: Abba Tesfaye, sitting up in bed, holds the untied leather cord in his left hand and with his right hand gives a single wooden stick to the youngest son, whose open hand reaches for it; the other loose sticks lie across the white gabi on his lap. Warm lamp light, 85mm lens, focus on the father's face and the single stick",
+      "image_prompt": "Close-up of two people: Abba Tesfaye, sitting up in bed, holds the untied leather cord in his left hand and with his right hand gives a single wooden stick to his youngest son (slim, faded blue shirt), who kneels at the bedside with his open hand reaching for it; the other loose sticks lie across the white gabi on his lap. Warm lamp light, 85mm lens, focus on the father's face and the single stick",
       "seed": 78,
       "motion": {
         "mode": "kenburns",
@@ -212,7 +220,8 @@
         "en": "Then he untied the bundle and gave each son a single stick. 'Now break yours.'",
         "spoken": "ከዚያም እስሩን ፈትተው ለእያንዳንዱ ልጅ አንድ አንድ እንጨት ሰጡ። «አሁን የራሳችሁን ስበሩ።»",
         "locked": true
-      }
+      },
+      "people_count": 2
     },
     {
       "id": "s08",
@@ -223,18 +232,20 @@
       "characters": [
         "sons"
       ],
-      "image_prompt": "Medium shot inside a traditional round Amhara house: thick mud-and-straw plastered walls, a central wooden pole holding up the conical thatched roof, the inside of the thatch blackened by smoke: the five brothers stand side by side near the alga bed, each holding one single thin wooden stick with both hands and snapping it in half at the same moment, small splinters in the air, their faces surprised and thoughtful. Warm kerosene lamp light, 35mm lens, all five faces visible",
+      "image_prompt": "Medium shot inside a traditional round Amhara house: thick mud-and-straw plastered walls, a central wooden pole holding up the conical thatched roof, the inside of the thatch blackened by smoke. Exactly five men, the five brothers, stand side by side close together in one row in the centre of the frame, from left to right: the eldest (trimmed beard, olive-green jacket), the second (brown wool jacket), the third (grey shirt), the fourth (tibeb scarf), the youngest (blue shirt); each holds one single thin wooden stick with both hands and snaps it in half at the same moment, small splinters in the air, their faces surprised and thoughtful. Warm kerosene lamp light, 35mm lens, all five faces visible",
       "seed": 89,
       "motion": {
         "mode": "wan",
         "kenburns": "static",
-        "video_prompt": "the five men snap their sticks in half, small splinters fly, then they look at the broken pieces, static camera"
+        "video_prompt": "the five men snap their sticks in half, small splinters fly, then they look at the broken pieces, static camera",
+        "vertical_fit": "blur"
       },
       "narration": {
         "en": "Each stick snapped easily.",
         "spoken": "እያንዳንዱ እንጨት በቀላሉ ተሰበረ።",
         "locked": true
-      }
+      },
+      "people_count": 5
     },
     {
       "id": "s09",
@@ -246,17 +257,19 @@
         "father",
         "sons"
       ],
-      "image_prompt": "Medium close-up: Abba Tesfaye propped up in bed speaks softly with a calm, loving face, his right hand resting on the tied bundle of sticks lying on the white gabi; the youngest son kneels at the bedside holding his father's left hand, the eldest son's hand rests on the youngest's shoulder, the other brothers' listening faces at the edge of the frame. Warm lamp light, 50mm lens",
+      "image_prompt": "Medium shot inside a traditional round Amhara house: thick mud-and-straw plastered walls, a central wooden pole holding up the conical thatched roof, the inside of the thatch blackened by smoke. Six people in total: Abba Tesfaye propped up in bed speaks softly with a calm, loving face, his right hand resting on the tied bundle of sticks lying on the white gabi; all five sons are close around him: the youngest (blue shirt) kneels at the bedside holding his father's left hand, the eldest (trimmed beard, olive-green jacket) rests his hand on the youngest's shoulder, and the second, the third and the fourth stand close behind them, listening. Warm lamp light, 35mm lens, all six faces visible, the group in the centre of the frame",
       "seed": 91,
       "motion": {
         "mode": "kenburns",
-        "kenburns": "zoom_in"
+        "kenburns": "zoom_in",
+        "vertical_fit": "blur"
       },
       "narration": {
         "en": "'My sons,' he said, 'alone, you are like one stick. Together, no one can break you.'",
         "spoken": "«ልጆቼ» አሉ፤ «ብቻችሁን ስትሆኑ እንደ አንድ እንጨት ናችሁ። አንድ ስትሆኑ ግን ማንም ሊሰብራችሁ አይችልም።»",
         "locked": true
-      }
+      },
+      "people_count": 6
     },
     {
       "id": "s10",
@@ -267,18 +280,20 @@
       "characters": [
         "sons"
       ],
-      "image_prompt": "Wide shot at sunrise in the terraced highland fields below the village: the five brothers work together; the second and third sons guide a pair of zebu oxen pulling a wooden maresha plough through red-brown earth, the fourth scatters teff seed from a woven basket, the eldest and the youngest carry one heavy eucalyptus log together on their shoulders; behind them the round thatched family house beside a euphorbia hedge, with the tied bundle of sticks hanging beside its doorway, and flat-topped amba mountains in morning mist. Golden morning light, eye level, 28mm lens",
+      "image_prompt": "Wide shot at sunrise in the terraced highland fields below the village. Exactly five men, the five brothers, work together in one group in the centre of the frame: the second (brown wool jacket) and the third (grey shirt) guide a pair of zebu oxen pulling a wooden maresha plough through red-brown earth; the fourth (tibeb scarf) scatters teff seed from a woven basket; the eldest (olive-green jacket) and the youngest (blue shirt) carry one heavy eucalyptus log together on their shoulders. Behind them the round thatched family house beside a euphorbia hedge, with the tied bundle of sticks hanging beside its doorway, and flat-topped amba mountains in morning mist. Golden morning light, eye level, 28mm lens",
       "seed": 101,
       "motion": {
         "mode": "wan",
         "kenburns": "zoom_out",
-        "video_prompt": "the oxen pull the plough slowly forward, seed falls from the basket, the two brothers walk with the log, morning mist, slow camera"
+        "video_prompt": "the oxen pull the plough slowly forward, seed falls from the basket, the two brothers walk with the log, morning mist, slow camera",
+        "vertical_fit": "blur"
       },
       "narration": {
         "en": "From that day, the brothers worked as one. As the elders say: when spider webs unite, they can tie up a lion.",
         "spoken": "ከዚያ ቀን ጀምሮ ወንድማማቾቹ እንደ አንድ ሰው ሠሩ። አበው እንዳሉት፦ ድር ቢያብር አንበሳ ያስር።",
         "locked": true
-      }
+      },
+      "people_count": 5
     }
   ],
   "music": {

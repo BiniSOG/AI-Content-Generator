@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 
 from .common import CallFailed, cache_key, cached, file_hash, link_current, load_storyboard, out_dir, say
-from .providers import cf_image_with_fallback
+from .providers import cf_image_with_fallback, gemini_inspect
 
 STAGE = "keyframes"
 MAX_PROMPT = 2048  # Workers AI FLUX prompt limit
@@ -58,12 +58,54 @@ def refs(sb: dict, regenerate: set[str] | None = None) -> list[str]:
         target = d / f"{ch['id']}-{key}.png"
         if not cached(target) or (regenerate and ch["id"] in regenerate):
             say(STAGE, f"reference sheet for {ch['id']} (seed {seed})")
-            _, used = cf_image_with_fallback(prompt, sb=sb, seed=seed, out_png=target, width=SIZE, height=SIZE,
-                                             stage=STAGE, shot=f"ref:{ch['id']}", cache_key=key)
+            generate_checked(sb, prompt, seed, target, ch.get("count", 1), f"ref:{ch['id']}",
+                             width=SIZE, height=SIZE, stage=STAGE, shot=f"ref:{ch['id']}", cache_key=key)
             changed.append(ch["id"])
         link_current(target, d / f"{ch['id']}.png")
     say(STAGE, f"references: {len(changed)} generated, look at outputs/refs/*.png")
     return changed
+
+
+COUNT_RETRY_STEPS = (1000, 2000, 3000)  # fixed alternate seeds, so results stay reproducible
+
+
+def count_people(sb: dict, png: Path, shot: str) -> int | None:
+    """How many people Gemini sees in the image; None if the check could not run."""
+    q = ("Count the people in this image. Count every person whose face or body is visible, even partly, "
+         "including people at the edges or in the background. Do not count paintings or reflections. "
+         'Answer as JSON: {"people": <integer>}')
+    try:
+        a = gemini_inspect(q, [("image/png", png.read_bytes())], model=sb["models"]["text"], stage=STAGE, shot=shot)
+        return int(a["people"])
+    except Exception as e:
+        say(STAGE, f"{shot}: people-count check failed ({str(e)[:80]}); look at the image yourself")
+        return None
+
+
+def generate_checked(sb: dict, prompt: str, seed: int, target: Path, want: int | None, label: str, **kw) -> tuple[str, int]:
+    """Generate an image; if `want` people are expected and Gemini counts a different number, try the
+    next fixed seeds and keep the first image with the right count. Returns (model_used, seed_used)."""
+    _, used = cf_image_with_fallback(prompt, sb=sb, seed=seed, out_png=target, **kw)
+    if want is None:
+        return used, seed
+    n = count_people(sb, target, label)
+    if n is None or n == want:
+        if n is not None:
+            say(STAGE, f"{label}: {n} people, as expected")
+        return used, seed
+    for step in COUNT_RETRY_STEPS:
+        say(STAGE, f"{label}: counted {n} people, expected {want}; trying seed {seed + step}")
+        alt = target.with_name(target.stem + f"-alt{step}.png")
+        _, used2 = cf_image_with_fallback(prompt, sb=sb, seed=seed + step, out_png=alt, **kw)
+        n = count_people(sb, alt, label)
+        if n == want:
+            alt.replace(target)
+            say(STAGE, f"{label}: seed {seed + step} has {want} people; using it")
+            return used2, seed + step
+        alt.unlink(missing_ok=True)
+    say(STAGE, f"{label}: WARNING no seed gave {want} people; kept seed {seed}. Look at it, change the seed "
+               f"in storyboard.json or simplify the prompt")
+    return used, seed
 
 
 def ref_candidates(sb: dict, only: set[str] | None = None, n: int = 4) -> None:
@@ -78,12 +120,18 @@ def ref_candidates(sb: dict, only: set[str] | None = None, n: int = 4) -> None:
         for i in range(n):
             seed = base + i * 111
             target = d / f"{ch['id']}-seed{seed}.png"
-            if cached(target):
+            if cached(target) or list(d.glob(f"{target.stem}-*.png")):
                 continue
             say(STAGE, f"candidate {ch['id']} seed {seed}")
             try:
                 cf_image_with_fallback(prompt, sb=sb, seed=seed, out_png=target, width=SIZE, height=SIZE,
                                        stage=STAGE, shot=f"refcand:{ch['id']}")
+                want = ch.get("count", 1)
+                if want > 1:
+                    n = count_people(sb, target, f"refcand:{ch['id']}")
+                    tag = "OK" if n == want else f"WRONG{n}"
+                    target.replace(target.with_name(f"{target.stem}-{tag}.png"))
+                    say(STAGE, f"  {n} people counted (need {want}) -> {tag}")
             except Exception as e:
                 say(STAGE, f"  failed: {str(e)[:120]}")
     say(STAGE, f"look at {d}/ ; put the seed you like in storyboard.json characters[].ref_seed, "
@@ -111,10 +159,10 @@ def run(sb: dict | None = None, only: set[str] | None = None, ref_only: bool = F
         if (only is None or s["id"] in only) and not cached(target):
             say(STAGE, f"{s['id']}: generating (seed {s['seed']}, {len(ref_files)} ref(s))")
             try:
-                _, used = cf_image_with_fallback(prompt, sb=sb, seed=s["seed"], out_png=target, width=SIZE,
-                                                 height=SIZE, refs=ref_files, stage=STAGE, shot=s["id"],
-                                                 cache_key=key)
-                meta[s["id"]] = {"file": target.name, "key": key, "model": used, "seed": s["seed"]}
+                used, seed_used = generate_checked(sb, prompt, s["seed"], target, s.get("people_count"), s["id"],
+                                                   width=SIZE, height=SIZE, refs=ref_files, stage=STAGE,
+                                                   shot=s["id"], cache_key=key)
+                meta[s["id"]] = {"file": target.name, "key": key, "model": used, "seed": seed_used}
                 changed.append(s["id"])
             except CallFailed as e:
                 say(STAGE, f"{s['id']}: FAILED after retries: {str(e)[:200]}")

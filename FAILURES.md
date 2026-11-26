@@ -56,7 +56,18 @@ The format is **what broke → what I tried → what fixed it or how I worked ar
 - **Fix:** `subtitles.subtitle_font` picks a font with Ethiopic letters (Nyala on Windows, Kefa on macOS, Noto Sans Ethiopic or Abyssinica SIL on Linux via `fc-list :lang=am`) and stops with an install hint if there is none. Long Amharic sentences are split at ፣ ፤ ፦ into several cues, and the English is paired with them sentence by sentence (split by length when the counts differ); no text is ever dropped.
 - **Evidence:** frames from the offline test with Abyssinica SIL, 16:9 and 9:16.
 
-### F09: TODO(you), the next real failure from your run
+### F09: four sons instead of five; faces looked Arab; voice must be Amharic only
+- **What broke:** (1) The film showed four sons, not five. (2) The faces looked Arab rather than Ethiopian. (3) The user wants the voice only in Amharic and the subtitles in English.
+- **Diagnosis:** (1) Two causes. Keyframes are square, and the 9:16 version kept only the centre 56 % of the width (less after the Ken Burns zoom), so the brothers at the ends of a row were cut out; a test frame with five numbered figures kept only 2, 3 and 4. Image models also miscount groups of five or more. (2) The F08 descriptions caused it: "narrow nose, thin lips, high nose bridge", plus an old man with a white beard in a white robe, are exactly the cues that pull image models toward an Arab face. (3) Nothing checked what language the audio was really in.
+- **Fix:**
+  1. Group shots set `motion.vertical_fit: "blur"`: the vertical version shows the whole image over a blurred copy, with a gentler zoom, so all five stay in frame.
+  2. Every group shot lists the brothers one by one, left to right, by their clothes, and says "exactly five men" or "six people in total".
+  3. Shots and the group reference have a `people_count` / `count`; after generation, Gemini vision counts the people, and if the number is wrong, seeds +1000, +2000 and +3000 are tried (`keyframes.generate_checked`). The reference candidates are named `-OK` or `-WRONG<n>`.
+  4. The faces are now described with dark brown skin, tightly coiled hair and documentary-photo realism instead of narrow features; the father has short grey stubble and a gabi over a faded shirt, not a long white beard and robe; the setting line says "Ethiopia, East Africa".
+  5. Subtitles are back to English only. Every narration line is checked by Gemini listening to it; audio in which anything but Amharic is heard is regenerated with the next TTS model.
+- **Evidence:** the five-figure crop vs fit test frame; `[keyframes] sNN: counted N people` and `[narration] sNN: language check OK` lines.
+
+### F10: TODO(you), the next real failure from your run
 - **What broke:**
 - **Tried:**
 - **Fix / workaround:**

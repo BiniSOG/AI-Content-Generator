@@ -107,6 +107,26 @@ def gemini_text(prompt: str, *, model: str, stage: str, shot: str | None = None,
         raise CallFailed(f"unexpected Gemini response: {json.dumps(data)[:400]}")
 
 
+def gemini_inspect(question: str, media: list[tuple[str, bytes]], *, model: str, stage: str,
+                   shot: str | None = None) -> dict:
+    """Ask a Gemini text model about an image or a sound (inline data) and get JSON back.
+    Used for automatic checks: count the people in a keyframe, check the narration language."""
+    parts = [{"inlineData": {"mimeType": mime, "data": base64.b64encode(data).decode()}} for mime, data in media]
+    parts.append({"text": question})
+    body = {"contents": [{"parts": parts}],
+            "generationConfig": {"temperature": 0, "responseMimeType": "application/json"}}
+    r, _ = _gemini_post(model, body, timeout=90,
+                        log=dict(stage=stage, shot=shot, provider="gemini", params={"check": question[:80]},
+                                 seed=None, cache_key=None, units=len(question) / 4, unit="input_tokens_est"))
+    data = r.json()
+    try:
+        txt = "".join(p.get("text", "") for p in data["candidates"][0]["content"]["parts"]).strip()
+        txt = txt.strip("`").removeprefix("json").strip()
+        return json.loads(txt)
+    except (KeyError, IndexError, json.JSONDecodeError):
+        raise CallFailed(f"unexpected inspection answer: {json.dumps(data)[:300]}")
+
+
 def gemini_list_models() -> list[str]:
     key = need_env("GEMINI_API_KEY")
     import requests
@@ -133,7 +153,7 @@ def tts_prompt(text: str, style: str | None, lang_name: str | None) -> str:
 
 def gemini_tts(text: str, *, model: str, voice: str, style: str | None, out_wav: Path,
                stage: str = "narration", shot: str | None = None, cache_key: str | None = None,
-               lang_name: str | None = None) -> Path:
+               lang_name: str | None = None, check=None) -> Path:
     """Speak `text` to out_wav. A model that answers HTTP 200 but with silent or near-empty audio
     (seen when a TTS model doesn't really support the language, e.g. Amharic) counts as a failure,
     and the next model in models.tts_fallbacks is tried."""
@@ -158,11 +178,14 @@ def gemini_tts(text: str, *, model: str, voice: str, style: str | None, out_wav:
                                         units=len(text), unit="chars"))
         _write_tts_audio(r.json(), out_wav)
         dur, mx = audio_stats(out_wav)
-        if not is_silent(out_wav, min_s=min_s):
-            return out_wav
+        if is_silent(out_wav, min_s=min_s):
+            problem = f"unusable audio ({dur:.1f}s, peak {mx} dB) for {len(text)} chars"
+        else:
+            problem = check(out_wav) if check else None
+            if not problem:
+                return out_wav
         tried.add(used)
-        say(stage, f"{used} returned unusable audio ({dur:.1f}s, peak {mx} dB) for {len(text)} chars; "
-                   f"trying the next TTS model")
+        say(stage, f"{used}: {problem}; trying the next TTS model")
         out_wav.unlink(missing_ok=True)
 
 

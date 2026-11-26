@@ -28,14 +28,14 @@ def shot_lengths(sb: dict) -> dict[str, float]:
     return out
 
 
-def _kenburns_filter(kind: str, w: int, h: int, frames: int) -> str:
+def _kenburns_filter(kind: str, w: int, h: int, frames: int, zoom: float = KB_ZOOM) -> str:
     n = max(frames - 1, 1)
     cx, cy = "iw/2-(iw/zoom/2)", "ih/2-(ih/zoom/2)"
-    z_end = 1 + KB_ZOOM
+    z_end = 1 + zoom
     if kind == "zoom_in":
-        z, x, y = f"1+{KB_ZOOM}*on/{n}", cx, cy
+        z, x, y = f"1+{zoom}*on/{n}", cx, cy
     elif kind == "zoom_out":
-        z, x, y = f"{z_end}-{KB_ZOOM}*on/{n}", cx, cy
+        z, x, y = f"{z_end}-{zoom}*on/{n}", cx, cy
     elif kind == "pan_right":
         z, x, y = f"{z_end}", f"(iw-iw/zoom)*on/{n}", cy
     elif kind == "pan_left":
@@ -50,21 +50,35 @@ def _kenburns_filter(kind: str, w: int, h: int, frames: int) -> str:
             f"format=yuv420p")
 
 
+def _fit_blur(w: int, h: int) -> str:
+    """Whole image fitted to the width, centred over a blurred, darkened copy filling the frame:
+    nobody at the edges of a group shot is cut off in the vertical version."""
+    return (f"split[a][b];[a]scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h},"
+            f"boxblur=24:2,eq=brightness=-0.10[bg];[b]scale={w}:{h}:force_original_aspect_ratio=decrease[fg];"
+            f"[bg][fg]overlay=(W-w)/2:(H-h)/2")
+
+
+def _frame(w: int, h: int, fit: str) -> str:
+    return _fit_blur(w, h) if fit == "blur" and h > w else _crop_to(w, h)
+
+
 def _crop_to(w: int, h: int) -> str:
     # centre crop the source to the target aspect ratio
     return f"crop='min(iw,ih*{w}/{h})':'min(ih,iw*{h}/{w})'"
 
 
-def render_kenburns(img: Path, kind: str, w: int, h: int, seconds: float, out: Path) -> None:
+def render_kenburns(img: Path, kind: str, w: int, h: int, seconds: float, out: Path, fit: str = "crop") -> None:
     frames = int(round(seconds * 24))
-    vf = _crop_to(w, h) + "," + _kenburns_filter(kind, w, h, frames)
+    fitted = fit == "blur" and h > w
+    # a gentler move on fitted group shots, so the people at the edges stay in frame
+    vf = _frame(w, h, fit) + "," + _kenburns_filter(kind, w, h, frames, KB_ZOOM * (0.35 if fitted else 1))
     ffmpeg(["-loop", "1", "-i", str(img), "-vf", vf, "-frames:v", str(frames), "-r", "24",
             "-c:v", "libx264", "-preset", "veryfast", "-crf", "18", "-pix_fmt", "yuv420p", "-an", str(out)])
 
 
-def render_clip(clip: Path, w: int, h: int, seconds: float, out: Path) -> None:
-    # trim a weak first 0.25 s, crop to aspect, hold last frame if the clip is short
-    vf = (f"trim=start=0.25,setpts=PTS-STARTPTS,{_crop_to(w, h)},scale={w}:{h}:flags=lanczos,fps=24,"
+def render_clip(clip: Path, w: int, h: int, seconds: float, out: Path, fit: str = "crop") -> None:
+    # trim a weak first 0.25 s, crop (or fit) to aspect, hold last frame if the clip is short
+    vf = (f"trim=start=0.25,setpts=PTS-STARTPTS,{_frame(w, h, fit)},scale={w}:{h}:flags=lanczos,fps=24,"
           f"tpad=stop_mode=clone:stop_duration={seconds},format=yuv420p")
     ffmpeg(["-i", str(clip), "-vf", vf, "-t", f"{seconds}", "-r", "24", "-c:v", "libx264",
             "-preset", "veryfast", "-crf", "18", "-an", str(out)])
@@ -94,15 +108,16 @@ def run(sb: dict | None = None, only: set[str] | None = None) -> list[str]:
         src_hash = file_hash(clip) if use_wan else (file_hash(kf) if kf and kf.exists() else "none")
         for tag, (w, h) in aspects.items():
             d = out_dir("shots", tag)
-            key = cache_key(src_hash, use_wan, s["motion"]["kenburns"], lengths[sid], w, h, KB_ZOOM)
+            fit = s["motion"].get("vertical_fit", "crop")
+            key = cache_key(src_hash, use_wan, s["motion"]["kenburns"], lengths[sid], w, h, KB_ZOOM, fit)
             target = d / f"{sid}-{key}.mp4"
             if (only is None or sid in only) and not cached(target):
                 t0 = time.time()
                 if use_wan:
-                    render_clip(clip, w, h, lengths[sid], target)
+                    render_clip(clip, w, h, lengths[sid], target, fit)
                     how = "wan clip"
                 elif kf and kf.exists():
-                    render_kenburns(kf, s["motion"]["kenburns"], w, h, lengths[sid], target)
+                    render_kenburns(kf, s["motion"]["kenburns"], w, h, lengths[sid], target, fit)
                     how = f"kenburns {s['motion']['kenburns']}"
                 else:
                     render_placeholder(w, h, lengths[sid], target)

@@ -49,6 +49,7 @@ def fake_text(prompt, **kw):
 narration.gemini_tts = fake_tts
 keyframes.cf_image_with_fallback = fake_img
 script.gemini_text = fake_text
+keyframes.count_people = lambda sb, png, shot: None  # the vision check needs the real API
 
 
 def full_run():

@@ -5,7 +5,8 @@ from __future__ import annotations
 import json
 
 from .common import audio_stats, cache_key, cached, duration_of, is_silent, link_current, load_storyboard, out_dir, say
-from .providers import gemini_tts
+from .providers import gemini_inspect, gemini_tts
+from .common import CallFailed
 
 STAGE = "narration"
 
@@ -37,7 +38,8 @@ def run(sb: dict | None = None, only: set[str] | None = None) -> list[str]:
         if (only is None or s["id"] in only) and not cached(target):
             say(STAGE, f"{s['id']}: generating ({len(text)} chars)")
             gemini_tts(text, model=model, voice=voice, style=style, out_wav=target,
-                       shot=s["id"], cache_key=key, lang_name=lang_name)
+                       shot=s["id"], cache_key=key, lang_name=lang_name,
+                       check=None if lang == "en" else _language_check(sb, s["id"], text, lang_name))
             changed.append(s["id"])
         if cached(target):
             link_current(target, d / f"{s['id']}.wav")
@@ -47,6 +49,29 @@ def run(sb: dict | None = None, only: set[str] | None = None) -> list[str]:
     say(STAGE, f"{len(changed)} regenerated" + (f": {', '.join(changed)}" if changed else " (all cached)")
         + f"; total narration {total:.1f}s")
     return changed
+
+
+def _language_check(sb: dict, sid: str, text: str, lang_name: str):
+    """Returns a check for gemini_tts: listen to the audio and reject it if anything other than
+    the narration language is spoken (e.g. the model read its English directions aloud)."""
+    def check(wav) -> str | None:
+        q = (f"Listen to this narration. It should contain ONLY this {lang_name} text, spoken in {lang_name}:\n"
+             f"{text}\n\nAnswer as JSON: {{\"spoken_language\": \"<main language heard>\", "
+             f"\"other_language_heard\": true or false, \"other_words\": \"<any words heard in another "
+             f"language, e.g. English, or empty>\"}}")
+        try:
+            a = gemini_inspect(q, [("audio/wav", wav.read_bytes())], model=sb["models"]["text"],
+                               stage=STAGE, shot=sid)
+        except CallFailed as e:
+            say(STAGE, f"{sid}: could not run the language check ({str(e)[:80]}); keeping the audio, listen to it")
+            return None
+        lang_ok = lang_name.lower() in str(a.get("spoken_language", "")).lower()
+        if not lang_ok or a.get("other_language_heard"):
+            return (f"audio is not purely {lang_name} (heard: {a.get('spoken_language')}; "
+                    f"other words: {a.get('other_words') or '-'})")
+        say(STAGE, f"{sid}: language check OK ({lang_name} only)")
+        return None
+    return check
 
 
 _SCRIPT_RANGES = {"am": ("\u1200", "\u139F"), "ti": ("\u1200", "\u139F")}  # Ethiopic (Ge'ez) script
