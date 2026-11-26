@@ -12,3 +12,4 @@ venv/
 # large / temporary media (final films + keyframes are kept; scratch is not)
 outputs/tmp/
 outputs/**/*.part
+outputs/smoke/
