@@ -12,41 +12,43 @@
 
 ### Constraints that shaped the design
 - 60–90 s, which is about 130–170 words of narration once Amharic runs longer than English.
-- One place (the race path) and two characters, to limit consistency problems.
-- A nature-documentary look with realistic animals: image models draw animals far more consistently than people, and no one's likeness is involved.
+- One place (the family tukul and its fields) and two references (father, sons), to limit consistency problems.
+- A realistic film-still look, so the faces read as Ethiopian rather than as generic illustration; all characters are fictional.
 - No real person is depicted or voiced (see ETHICS.md).
 - GPU quota: Wan 2.2 only on 3 hero shots, Ken Burns elsewhere.
 
 ## 2. Story
 
-**Logline:** In the Ethiopian highlands, a boastful rabbit challenges a slow tortoise to a race, naps halfway because he is sure he will win, and wakes to find the tortoise has already reached the finish.
+**Logline:** An old Ethiopian farmer on his sickbed calls his five quarrelling sons and, with a bundle of sticks, shows them that alone they break easily but together no one can break them.
 
-A retelling of Aesop's fable *The Tortoise and the Hare*, set in the Ethiopian highlands with animals native to them (an Ethiopian highland hare, a leopard tortoise, gelada monkeys), narrated in Amharic, and closed with the Amharic proverb ቀስ በቀስ እንቁላል በእግሩ ይሄዳል ("little by little, even an egg learns to walk").
+A retelling of the old fable of the bundle of sticks (found in Aesop and in many other traditions), set in an Ethiopian highland farming family, narrated in Amharic, and closed with the Amharic proverb ድር ቢያብር አንበሳ ያስር ("when spider webs unite, they can tie up a lion").
 
 **Beats:**
-1. Place and the race course: the path and the far warka tree (s01)
-2. The boast and the challenge (s02–s03)
-3. The start: one flies, one barely moves (s04)
-4. Overconfidence: far ahead, then the nap (s05–s06)
-5. Steady steps, and the pass (s07–s08)
-6. The finish and the lesson (s09–s10)
+1. Place and the sickbed (s01–s02)
+2. The problem: the sons quarrel (s03)
+3. The call (s04)
+4. The test: the tied bundle cannot be broken (s05–s06)
+5. The turn: single sticks snap (s07–s08)
+6. The lesson and its result: together in the same fields they fought over (s09–s10)
 
-**Motif:** the warka tree. It is the far dot in s01, the finish in s09, and the shelter where the rabbit is humbled in s10.
+**Motif:** the bundle of sticks. It is tied in s05, untied in s07, rests under the father's hand in s09, and hangs by the door in s10.
+
+**Characters:** one reference for the father and one group reference for the five sons (FLUX.2 takes only a few reference images per shot), each son dressed distinctly so they can be told apart.
 
 ## 3. Why every shot exists
 
 | Shot | Size | Reason |
 |---|---|---|
-| s01 | extreme wide | Establishing shot: the place and, through the path and the far tree, the race course and its finish before we meet anyone. |
-| s02 | medium | Introduces the rabbit and his flaw, pride, in one image: high on the rock, looking down. |
-| s03 | close up | Low angle on the tortoise answers the high angle on the rabbit: the small one accepts the challenge calmly. |
-| s04 | wide | The whole contrast of the film in one frame: one is already flying, the other has barely moved. Local animals as the crowd. |
-| s05 | medium | Shows the distance between them, which is what makes the rabbit careless. |
-| s06 | medium | The mistake: the rabbit stops because he underestimates the tortoise. The calm image makes the danger funny. |
-| s07 | close up | The film's lesson shown, not told: steady steps. Close and low so the slow walk feels determined, not weak. |
-| s08 | medium | The turning point: both characters in one frame as the lead changes hands. |
-| s09 | wide | The payoff: the winner and the loser in one frame, so the audience sees the result before it is said. |
-| s10 | medium close up | Resolution: the proud one is humbled, and the Amharic proverb gives the moral a local voice. |
+| s01 | extreme wide | Establishing shot: the place and the one lit doorway lead us to the sickbed before we meet anyone. |
+| s02 | medium | Introduces the father and his worry in one image, so the audience asks what troubles him. |
+| s03 | wide | Answers the question: the worry is the sons' division. Two groups and the oxen between them show what they fight over. |
+| s04 | medium | Brings the divided brothers into one frame for the first time, around their father. |
+| s05 | close up | Introduces the object the whole lesson depends on; close so the tight cord is clearly seen. |
+| s06 | medium | Shows strength failing against the bundle, which sets up the surprise. |
+| s07 | close up | The turn: the same sticks, separated. The father's hands do the teaching. |
+| s08 | medium | The surprise, shown with all five at once so the audience sees it before it is explained. |
+| s09 | medium close up | The father's words name the lesson; the brothers touching each other already show them taking it in. |
+| s10 | wide | Resolution: the quarrel of s03 becomes shared work in the same fields, and the proverb gives the moral a local voice. |
 
 (These reasons are also stored in `storyboard.json` as `shots[].reason`, so they can't drift from the plan.)
 

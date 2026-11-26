@@ -4,9 +4,9 @@
 
 **No real person's face, likeness or voice appears in this film.**
 
-- **The characters are animals.** The rabbit (Tinchel) and the tortoise (Eli) are fictional; the story is a retelling of Aesop's public-domain fable. The storyboard sets `characters[].real_person = false`, and no photo of a real person or of anyone's pet was used as a reference.
+- **The characters are fictional.** Abba Tesfaye and his five sons are invented; their appearance is a composite of typical Ethiopian Amhara features and dress, written so the film represents its community accurately. The storyboard sets `characters[].real_person = false`, and no photo of a real person was used as a reference. The father's illness is shown with dignity: no medical detail, no death on screen.
 - **The narrator's voice is a stock Gemini TTS voice** ("Kore"). It is not cloned from anyone; the storyboard enforces `voice.cloned: false`.
-- **The story** is Aesop's fable *The Tortoise and the Hare* (public domain), retold in an Ethiopian setting; the closing proverb is a common Amharic saying. No private details were sent to any API.
+- **The story** is the traditional fable of the bundle of sticks (public domain), retold in an Ethiopian setting; the closing proverb is a common Amharic saying. No private details were sent to any API.
 - **The pipeline enforces consent in code.** If a character is ever marked `real_person: true`, `python run.py validate` refuses to run until this file contains a line `CONSENT:<character_id>` with the record below.
 
 <!-- Template, only needed for a real person:

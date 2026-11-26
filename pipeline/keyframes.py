@@ -18,15 +18,17 @@ MAX_PROMPT = 2048  # Workers AI FLUX prompt limit
 SIZE = 1024  # square, subject centred: both 16:9 and 9:16 are cropped from it
 
 
-REF_STYLE = ("realistic wildlife photograph, soft even daylight, natural fur, skin and shell texture, sharp focus "
-             "on the face and eyes, no text, no letters, no watermark")
+REF_STYLE = ("realistic photograph, soft even daylight, true-to-life skin tones and natural texture, sharp focus "
+             "on every face, no text, no letters, no watermark")
+REF_FRAMING = ("Full body, facing the camera at a slight three-quarter angle, the whole face clearly visible, "
+               "plain soft warm neutral background")
 
 
 def ref_prompt(sb: dict, ch: dict) -> str:
-    # One clear full-body image, not a two-panel sheet: the shots copy identity from this image,
-    # and a two-panel sheet used as a reference tends to make the shots come out as two panels.
-    return (f"Character reference image. {ch['description']}. Full body, three-quarter side view, standing on short "
-            f"grass, the whole body, face and eyes clearly visible, plain soft warm neutral background. {REF_STYLE}")
+    # One clear image, not a two-panel sheet: the shots copy identity from it, and a two-panel
+    # sheet used as a reference tends to make the shots come out as two panels.
+    framing = ch.get("ref_framing") or REF_FRAMING
+    return f"Character reference image of fictional people. {ch['description']}. {framing}. {REF_STYLE}"
 
 
 def shot_prompt(sb: dict, shot: dict) -> str:

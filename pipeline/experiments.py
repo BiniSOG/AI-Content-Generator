@@ -40,7 +40,7 @@ def e01(sb, d):
     return {"changed": "style block present vs removed", "fixed": f"seed {s['seed']}, model, shot s02"}
 
 
-@experiment("e02", "Conditioning on the character reference image keeps the tortoise and the rabbit recognisable better than describing her in text alone.")
+@experiment("e02", "Conditioning on the character reference image keeps the father and his sons recognisable better than describing her in text alone.")
 def e02(sb, d):
     s = shot_by_id(sb, "s04")
     p = shot_prompt(sb, s)

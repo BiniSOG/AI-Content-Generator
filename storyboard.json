@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "title": "Slowly, the Egg Walks",
-  "logline": "In the Ethiopian highlands, a boastful rabbit challenges a slow tortoise to a race, naps halfway because he is sure he will win, and wakes to find the tortoise has already reached the finish.",
+  "title": "When Webs Unite",
+  "logline": "An old Ethiopian farmer on his sickbed calls his five quarrelling sons and, with a bundle of sticks, shows them that alone they break easily but together no one can break them.",
   "audience": {
-    "who": "TODO(you): e.g. Amharic-speaking children aged 5-10 and their parents",
-    "where": "TODO(you): e.g. on a phone, vertical, YouTube Shorts / TikTok, sound on",
-    "feel": "TODO(you): e.g. laughing at the sleeping rabbit and cheering for the tortoise"
+    "who": "TODO(you): e.g. Amharic-speaking families, young adults with brothers and sisters",
+    "where": "TODO(you): e.g. on a phone, vertical, YouTube Shorts / TikTok / Facebook, sound on",
+    "feel": "TODO(you): e.g. the wish to call a brother or sister you have argued with"
   },
   "language": {
     "narration": "am",
@@ -35,254 +35,255 @@
     "music": "ACE-Step-1.5"
   },
   "style": {
-    "block": "cinematic nature documentary still, photorealistic animals with natural fur and shell detail, green Ethiopian highland landscape with acacia and warka trees, warm golden light, camera low at the animals' eye level, shallow depth of field, gentle film grain, animals without clothes behaving naturally, main subject centred with the key action in the middle of a square frame, no text, no letters, no watermark",
-    "negative": "cartoon, anime, 3d render, plastic look, clothes on animals, extra legs, deformed paws, two heads, text, watermark, harsh contrast, neon",
+    "block": "cinematic film still, realistic documentary photography, 35mm film look, authentic rural Ethiopian highland home, warm kerosene-lamp and fire light against deep shadows, gentle film grain, shallow depth of field, true-to-life brown skin tones with natural skin texture, realistic hands with five fingers, main subject centred with the key action in the middle of a square frame, no text, no letters, no watermark",
+    "negative": "cartoon, anime, illustration, painting, 3d render, plastic skin, waxy face, text, watermark, extra fingers, deformed hands, extra people, floating objects, harsh contrast, neon",
     "golden_ref": null
   },
   "characters": [
     {
-      "id": "rabbit",
-      "name": "Tinchel (the rabbit)",
+      "id": "father",
+      "name": "Abba Tesfaye (the father)",
       "real_person": false,
-      "ref_seed": 3101,
-      "description": "Tinchel, a slender Ethiopian highland hare (a wild rabbit): long upright ears with black tips, sandy-brown and grey fur flecked with black, a white belly and white chin, long powerful hind legs, large round amber eyes, long whiskers, a confident, cocky expression",
-      "short": "Tinchel the rabbit: slender Ethiopian highland hare, long black-tipped upright ears, sandy-brown and grey fur, white belly, long hind legs, large amber eyes"
+      "ref_seed": 5101,
+      "description": "Abba Tesfaye, an Ethiopian Amhara highland farmer in his eighties, thin and frail from illness: warm dark brown skin, long oval Habesha face with deep wrinkles, high cheekbones, slim straight nose, kind tired dark eyes, short white tightly curled hair and a short white beard; a white cotton gabi blanket wrapped around his shoulders, a small silver Ethiopian Orthodox cross on a black cord",
+      "short": "Abba Tesfaye: frail Ethiopian Amhara farmer in his eighties, warm dark brown skin, long oval wrinkled face, slim nose, short white curly hair and short white beard, white gabi blanket",
+      "ref_framing": "Waist-up, seated upright on a plain wooden stool, facing the camera at a slight three-quarter angle, the whole face clearly visible, hands resting on his knees, plain soft warm neutral background"
     },
     {
-      "id": "tortoise",
-      "name": "Eli (the tortoise)",
+      "id": "sons",
+      "name": "the five sons",
       "real_person": false,
-      "ref_seed": 4202,
-      "description": "Eli, an old leopard tortoise: a high domed shell patterned with cream and dark brown blotches, the edges of the shell worn smooth with age, thick wrinkled grey-brown scaly legs with short claws, a small wise face with calm dark eyes and a slightly hooked beak",
-      "short": "Eli the tortoise: old leopard tortoise, high domed shell with cream and dark brown blotches, wrinkled grey-brown legs, small wise face with calm dark eyes"
+      "ref_seed": 6202,
+      "description": "Abba Tesfaye's five grown sons, Ethiopian Amhara highland farmers aged about 25 to 45, all with warm brown skin, oval Habesha faces, high cheekbones, slim noses and short black curly hair, each easy to tell apart: the eldest with a short black beard and a white gabi over his shoulders; the second tall and broad in a brown wool jacket; the third with a thin moustache in a grey shirt; the fourth in a white shirt with a green-yellow-red tibeb-trimmed scarf; the youngest slim and clean-shaven in a blue shirt",
+      "short": "the five sons: Ethiopian Amhara farmers aged 25 to 45, warm brown skin, oval Habesha faces, short black curly hair; eldest bearded in a white gabi, second tall in a brown wool jacket, third moustached in a grey shirt, fourth in a white shirt with a tibeb scarf, youngest slim in a blue shirt",
+      "ref_framing": "Group portrait of all five standing side by side in one row, eldest on the left and youngest on the right, full body, facing the camera, every face clearly visible, plain soft warm neutral background"
     }
   ],
   "voice": {
-    "name": "Kore",
-    "style": "Tell this like a warm grandparent telling a children's fable: clear, lively and kind, with gentle humour; a little proud and quick for the rabbit's words, slow and calm for the tortoise's.",
+    "name": "Charon",
+    "style": "Tell this like a wise Ethiopian elder telling a story to his family: slow, warm and dignified, with quiet emotion; the father's words softer and a little frail, full of love.",
     "cloned": false
   },
   "shots": [
     {
       "id": "s01",
-      "beat": "The hills",
-      "reason": "Establishing shot: the place and, through the path and the far tree, the race course and its finish before we meet anyone.",
+      "beat": "The village",
+      "reason": "Establishing shot: the place and the one lit doorway lead us to the sickbed before we meet anyone.",
       "shot_size": "extreme_wide",
       "duration_s": 6,
       "characters": [],
-      "image_prompt": "Extreme wide establishing shot at sunrise over the green Ethiopian highlands: rolling hills, a winding red dirt path running from the foreground into the distance, a single huge old warka fig tree standing on the far hilltop where the path ends, flat-topped acacia trees, wildflowers, distant blue mountains under thin morning mist. No animals visible. Eye level, 24mm lens, deep focus",
-      "seed": 11,
+      "image_prompt": "Extreme wide establishing shot at dusk of a small farming village in the Ethiopian highlands: round tukul houses with mud walls and conical thatched roofs, a yard with a wooden fence, two oxen resting, ploughed fields and eucalyptus trees on the hills, a deep blue evening sky with the last orange light on the horizon; warm lamp light glowing from the open doorway of the nearest tukul. No people visible. Eye level, 24mm lens, deep focus",
+      "seed": 12,
       "motion": {
         "mode": "wan",
         "kenburns": "pan_right",
-        "video_prompt": "slow cinematic pan to the right across the hills, mist drifts gently, grass sways, nothing else moves"
+        "video_prompt": "slow cinematic pan to the right, evening mist drifts over the fields, the lamp light in the doorway flickers, nothing else moves"
       },
       "narration": {
-        "en": "Long ago, in the green hills, there lived a rabbit who was very fast, and a tortoise who was very slow.",
-        "spoken": "ድሮ ድሮ፣ በአረንጓዴዎቹ ኮረብቶች ላይ በጣም ፈጣን ጥንቸልና በጣም ቀርፋፋ ኤሊ ይኖሩ ነበር።",
+        "en": "In a village in the highlands, an old farmer, Abba Tesfaye, lay sick in his bed.",
+        "spoken": "በደጋው መንደር ውስጥ፣ አባ ተስፋዬ የሚባሉ አንድ አዛውንት ገበሬ ታመው በአልጋቸው ላይ ተኝተው ነበር።",
         "locked": true
       }
     },
     {
       "id": "s02",
-      "beat": "The boaster",
-      "reason": "Introduces the rabbit and his flaw, pride, in one image: high on the rock, looking down.",
+      "beat": "The worry",
+      "reason": "Introduces the father and his worry in one image, so the audience asks what troubles him.",
       "shot_size": "medium",
       "duration_s": 7,
       "characters": [
-        "rabbit"
+        "father"
       ],
-      "image_prompt": "Medium shot. Tinchel the rabbit sits up tall on his hind legs on top of a flat grey rock beside the red dirt path, chest puffed out, ears straight up, looking down with a proud, mocking look; behind him the green hills in soft focus. Morning light from the side, 85mm lens, eye level with the rabbit",
-      "seed": 22,
+      "image_prompt": "Medium shot inside a dim tukul at night. Abba Tesfaye lies propped up on a simple wooden alga bed with a woven leather-strip base, his head on a folded cloth, a white gabi blanket pulled up to his chest, his thin hands resting on top of it; his eyes are open and worried, looking toward the doorway. A small kerosene lamp on a wooden stool beside the bed lights his face with warm orange light; mud walls, a woven basket, a wooden Orthodox cross hanging on the wall. Eye level, 50mm lens",
+      "seed": 23,
       "motion": {
         "mode": "kenburns",
         "kenburns": "zoom_in"
       },
       "narration": {
-        "en": "The rabbit loved to laugh at the others. 'No one in these hills can beat me,' he said.",
-        "spoken": "ጥንቸሉ በሌሎች መሳቅ ይወድ ነበር። «በእነዚህ ኮረብቶች ውስጥ ማንም ሊያሸንፈኝ አይችልም» አለ።",
+        "en": "He knew his time was near. And one thing troubled him more than his illness.",
+        "spoken": "ጊዜያቸው እንደቀረበ ያውቁ ነበር። ከሕመማቸው በላይ ግን አንድ ነገር ያሳስባቸው ነበር።",
         "locked": true
       }
     },
     {
       "id": "s03",
-      "beat": "The challenge",
-      "reason": "Low angle on the tortoise answers the high angle on the rabbit: the small one accepts the challenge calmly.",
-      "shot_size": "close_up",
-      "duration_s": 7,
-      "characters": [
-        "tortoise"
-      ],
-      "image_prompt": "Close-up of Eli the tortoise standing on the red dirt path at the foot of the rock, her head stretched out and tilted up toward the camera, calm dark eyes, a patient, quietly determined expression; low angle at ground level, grass blades in the soft foreground, warm morning light, 100mm macro lens",
-      "seed": 33,
-      "motion": {
-        "mode": "kenburns",
-        "kenburns": "zoom_in"
-      },
-      "narration": {
-        "en": "The tortoise looked up and said quietly, 'Then let us race, to the big warka tree.'",
-        "spoken": "ኤሊዋ ቀና ብላ በለሆሳስ «እንግዲያው እስከ ትልቁ የዋርካ ዛፍ ድረስ እንሽቀዳደም» አለች።",
-        "locked": true
-      }
-    },
-    {
-      "id": "s04",
-      "beat": "The start",
-      "reason": "The whole contrast of the film in one frame: one is already flying, the other has barely moved. Local animals as the crowd.",
+      "beat": "The quarrel",
+      "reason": "Answers the question: the worry is the sons' division. Two groups and the oxen between them show what they fight over.",
       "shot_size": "wide",
-      "duration_s": 7,
+      "duration_s": 8,
       "characters": [
-        "rabbit",
-        "tortoise"
+        "sons"
       ],
-      "image_prompt": "Wide shot at the start of the race on the red dirt path: a line of small white stones laid across the path as the start line; Tinchel the rabbit already leaping forward from the line in mid-sprint, all four paws off the ground, a puff of red dust behind him; Eli the tortoise just behind the line taking her first slow step. On both sides of the path, watching: a family of gelada monkeys sitting on rocks, a thick-billed raven and a few highland birds. Morning light, eye level, 35mm lens",
-      "seed": 44,
+      "image_prompt": "Wide shot in the dusty yard outside the tukul in late afternoon: the five sons stand in two groups facing each other and argue; the second son and the third son point at each other with angry faces, the eldest stands with his arms crossed, the fourth shakes his head, the youngest turns away; between the two groups stand two oxen with a wooden plough yoke; the tukul and eucalyptus trees behind them. Eye level, 28mm lens, all five faces visible",
+      "seed": 34,
       "motion": {
         "mode": "kenburns",
         "kenburns": "pan_left"
       },
       "narration": {
-        "en": "All the animals came to watch. The rabbit laughed. And the race began.",
-        "spoken": "እንስሳት ሁሉ ሊመለከቱ መጡ። ጥንቸሉ ሳቀ። ውድድሩም ተጀመረ።",
+        "en": "His five sons were strong, but they always quarrelled: over the land, over the oxen, over everything.",
+        "spoken": "አምስቱ ልጆቻቸው ብርቱዎች ነበሩ፤ ግን ሁልጊዜ ይጣሉ ነበር፦ በመሬቱ፣ በበሬዎቹ፣ በሁሉም ነገር።",
+        "locked": true
+      }
+    },
+    {
+      "id": "s04",
+      "beat": "The call",
+      "reason": "Brings the divided brothers into one frame for the first time, around their father.",
+      "shot_size": "medium",
+      "duration_s": 6,
+      "characters": [
+        "father",
+        "sons"
+      ],
+      "image_prompt": "Medium wide shot inside the tukul at night: the five sons gather close around their father's wooden bed, faces lit by the warm kerosene lamp, serious and quiet; the eldest stands at the head of the bed, the youngest kneels at the bedside, the other three stand behind; Abba Tesfaye, propped up under the white gabi, looks at them. Eye level, 35mm lens, all six faces visible",
+      "seed": 45,
+      "motion": {
+        "mode": "kenburns",
+        "kenburns": "zoom_in"
+      },
+      "narration": {
+        "en": "So he called all five of his sons to his bedside.",
+        "spoken": "ስለዚህ አምስቱንም ልጆቻቸውን ወደ አልጋቸው አጠገብ ጠሯቸው።",
         "locked": true
       }
     },
     {
       "id": "s05",
-      "beat": "Far ahead",
-      "reason": "Shows the distance between them, which is what makes the rabbit careless.",
-      "shot_size": "medium",
+      "beat": "The bundle",
+      "reason": "Introduces the object the whole lesson depends on; close so the tight cord is clearly seen.",
+      "shot_size": "close_up",
       "duration_s": 7,
       "characters": [
-        "rabbit"
+        "father"
       ],
-      "image_prompt": "Medium shot. Tinchel the rabbit stands far along the red dirt path between acacia trees, glancing back over his shoulder with a smug look; far behind him, very small in the distance on the empty path, the tortoise is a tiny dark dot. Midday sun, heat haze over the path, 70mm lens, eye level with the rabbit",
-      "seed": 55,
+      "image_prompt": "Close-up of Abba Tesfaye's frail wrinkled brown hands holding out a thick bundle of about ten straight wooden sticks, each as long as a forearm and as thick as a finger, tied tightly together in the middle with a leather cord; a strong younger hand reaches in from the side to take the bundle. The white gabi blanket below, warm lamp light, dark background, 85mm lens, shallow depth of field, focus on the bundle and the cord",
+      "seed": 56,
       "motion": {
-        "mode": "wan",
-        "kenburns": "zoom_out",
-        "video_prompt": "the rabbit turns his head back over his shoulder, ears twitch, heat haze shimmers over the path, static camera"
+        "mode": "kenburns",
+        "kenburns": "zoom_in"
       },
       "narration": {
-        "en": "In a moment, the rabbit was far ahead. He looked back, and the tortoise was only a small dot.",
-        "spoken": "ጥንቸሉ በቅጽበት በጣም ቀደመ። ወደ ኋላ ቢመለከት ኤሊዋ ትንሽ ነጥብ ብቻ ሆና ታየች።",
+        "en": "He gave them a bundle of sticks, tied tightly together. 'Break it,' he said.",
+        "spoken": "በጥብቅ የታሰረ አንድ እስር እንጨት ሰጧቸው። «ስበሩት» አሉ።",
         "locked": true
       }
     },
     {
       "id": "s06",
-      "beat": "The nap",
-      "reason": "The mistake: the rabbit stops because he underestimates the tortoise. The calm image makes the danger funny.",
+      "beat": "No one can",
+      "reason": "Shows strength failing against the bundle, which sets up the surprise.",
       "shot_size": "medium",
       "duration_s": 8,
       "characters": [
-        "rabbit"
+        "sons"
       ],
-      "image_prompt": "Medium shot. Tinchel the rabbit lies stretched out asleep on his side in the cool shade of a flat-topped acacia tree right beside the red dirt path, eyes shut, ears folded back along his body, relaxed and comfortable; dappled sunlight on the grass, a butterfly resting on a flower near his nose; the empty path continues behind him toward the far hilltop. Warm afternoon light, 50mm lens, low camera at ground level",
-      "seed": 66,
+      "image_prompt": "Medium shot inside the lamp-lit tukul: the eldest son, short black beard and white gabi on his shoulders, holds the tied bundle of sticks with both hands, one hand at each end, and presses it down hard over his raised knee, straining with effort; the bundle bends slightly but does not break; behind him the other four brothers watch, the second son reaching out to try next. Warm lamp light, 50mm lens",
+      "seed": 67,
       "motion": {
         "mode": "kenburns",
-        "kenburns": "zoom_in"
+        "kenburns": "static"
       },
       "narration": {
-        "en": "'I have plenty of time,' he thought. He lay down in the shade beside the road, and fell asleep.",
-        "spoken": "«ብዙ ጊዜ አለኝ» ብሎ አሰበ። ከመንገዱ ዳር ጥላ ስር ተኝቶ እንቅልፍ ወሰደው።",
+        "en": "One by one, each son tried with all his strength. No one could break it.",
+        "spoken": "አንድ በአንድ እያንዳንዱ ልጅ በሙሉ ኃይሉ ሞከረ። ማንም ሊሰብረው አልቻለም።",
         "locked": true
       }
     },
     {
       "id": "s07",
-      "beat": "Step by step",
-      "reason": "The film's lesson shown, not told: steady steps. Close and low so the slow walk feels determined, not weak.",
+      "beat": "One stick each",
+      "reason": "The turn: the same sticks, separated. The father's hands do the teaching.",
       "shot_size": "close_up",
       "duration_s": 7,
       "characters": [
-        "tortoise"
+        "father",
+        "sons"
       ],
-      "image_prompt": "Close-up at ground level of Eli the tortoise walking steadily along the red dirt path toward the camera: one front leg lifted mid-step, claws about to touch the dust, the other three legs planted firmly, head forward, eyes fixed on the road ahead; small footprints in the dust behind her; hot afternoon sun, heat haze, 100mm macro lens, shallow depth of field",
-      "seed": 77,
+      "image_prompt": "Close-up: Abba Tesfaye, sitting up in bed, holds the untied leather cord in his left hand and with his right hand gives a single wooden stick to the youngest son, whose open hand reaches for it; the other loose sticks lie across the white gabi on his lap. Warm lamp light, 85mm lens, focus on the father's face and the single stick",
+      "seed": 78,
       "motion": {
         "mode": "kenburns",
         "kenburns": "zoom_in"
       },
       "narration": {
-        "en": "The tortoise did not stop. One step, then another, all through the hot afternoon.",
-        "spoken": "ኤሊዋ አላቆመችም። አንድ እርምጃ፣ ከዚያም ሌላ፣ በሞቃቱ ከሰዓት በኋላ ሁሉ።",
+        "en": "Then he untied the bundle and gave each son a single stick. 'Now break yours.'",
+        "spoken": "ከዚያም እስሩን ፈትተው ለእያንዳንዱ ልጅ አንድ አንድ እንጨት ሰጡ። «አሁን የራሳችሁን ስበሩ።»",
         "locked": true
       }
     },
     {
       "id": "s08",
-      "beat": "Passing by",
-      "reason": "The turning point: both characters in one frame as the lead changes hands.",
+      "beat": "Snap",
+      "reason": "The surprise, shown with all five at once so the audience sees it before it is explained.",
       "shot_size": "medium",
-      "duration_s": 7,
+      "duration_s": 6,
       "characters": [
-        "rabbit",
-        "tortoise"
+        "sons"
       ],
-      "image_prompt": "Medium shot beside the acacia tree: in the foreground Tinchel the rabbit still lies asleep on his side in the shade, eyes shut; on the red dirt path just behind him, Eli the tortoise walks past in profile, steady and quiet, heading toward the far hilltop; both animals in sharp focus. Late afternoon golden light, long shadows, 35mm lens, low camera",
-      "seed": 88,
+      "image_prompt": "Medium shot of the five brothers standing side by side near the bed, each holding one single thin wooden stick with both hands and snapping it in half at the same moment, small splinters in the air, their faces surprised and thoughtful. Warm kerosene lamp light, 35mm lens, all five faces visible",
+      "seed": 89,
       "motion": {
-        "mode": "kenburns",
-        "kenburns": "pan_right"
+        "mode": "wan",
+        "kenburns": "static",
+        "video_prompt": "the five men snap their sticks in half, small splinters fly, then they look at the broken pieces, static camera"
       },
       "narration": {
-        "en": "Slowly, quietly, she walked past the sleeping rabbit.",
-        "spoken": "ቀስ ብላ፣ በጸጥታ፣ ከተኛው ጥንቸል አጠገብ አልፋ ሄደች።",
+        "en": "Each stick snapped easily.",
+        "spoken": "እያንዳንዱ እንጨት በቀላሉ ተሰበረ።",
         "locked": true
       }
     },
     {
       "id": "s09",
-      "beat": "The finish",
-      "reason": "The payoff: the winner and the loser in one frame, so the audience sees the result before it is said.",
-      "shot_size": "wide",
-      "duration_s": 8,
+      "beat": "The lesson",
+      "reason": "The father's words name the lesson; the brothers touching each other already show them taking it in.",
+      "shot_size": "medium_close_up",
+      "duration_s": 10,
       "characters": [
-        "rabbit",
-        "tortoise"
+        "father",
+        "sons"
       ],
-      "image_prompt": "Wide shot at the finish at sunset: the huge old warka fig tree on the hilltop with the red dirt path ending at its roots; Eli the tortoise has just arrived under the tree, while gelada monkeys and birds around her cheer; far down the path behind her, Tinchel the rabbit sprints uphill in panic, ears flat back, a trail of red dust, too late. Orange sunset light, long shadows, 28mm lens, eye level",
-      "seed": 99,
+      "image_prompt": "Medium close-up: Abba Tesfaye propped up in bed speaks softly with a calm, loving face, his right hand resting on the tied bundle of sticks lying on the white gabi; the youngest son kneels at the bedside holding his father's left hand, the eldest son's hand rests on the youngest's shoulder, the other brothers' listening faces at the edge of the frame. Warm lamp light, 50mm lens",
+      "seed": 91,
       "motion": {
-        "mode": "wan",
-        "kenburns": "zoom_out",
-        "video_prompt": "the rabbit sprints uphill far in the background kicking up dust, the monkeys bounce and wave, leaves stir, static camera"
+        "mode": "kenburns",
+        "kenburns": "zoom_in"
       },
       "narration": {
-        "en": "When the rabbit woke up, he ran as fast as he could. But the tortoise was already at the tree.",
-        "spoken": "ጥንቸሉ ሲነቃ የቻለውን ያህል ሮጠ። ኤሊዋ ግን ቀድማ ዛፉ ጋ ደርሳ ነበር።",
+        "en": "'My sons,' he said, 'alone, you are like one stick. Together, no one can break you.'",
+        "spoken": "«ልጆቼ» አሉ፤ «ብቻችሁን ስትሆኑ እንደ አንድ እንጨት ናችሁ። አንድ ስትሆኑ ግን ማንም ሊሰብራችሁ አይችልም።»",
         "locked": true
       }
     },
     {
       "id": "s10",
-      "beat": "The lesson",
-      "reason": "Resolution: the proud one is humbled, and the Amharic proverb gives the moral a local voice.",
-      "shot_size": "medium_close_up",
+      "beat": "Together",
+      "reason": "Resolution: the quarrel of s03 becomes shared work in the same fields, and the proverb gives the moral a local voice.",
+      "shot_size": "wide",
       "duration_s": 9,
       "characters": [
-        "rabbit",
-        "tortoise"
+        "sons"
       ],
-      "image_prompt": "Medium close-up under the warka tree at dusk: Eli the tortoise rests calmly among the big tree roots, a few small yellow meskel daisies beside her; Tinchel the rabbit sits in front of her, out of breath, ears drooping, head lowered, humble; the two face each other. Soft warm dusk light, 50mm lens, low camera at the animals' eye level",
-      "seed": 110,
+      "image_prompt": "Wide shot at sunrise in the green highland field below the village: the five brothers work together, the second and third sons guiding a pair of oxen pulling a wooden plough, the fourth scattering seed from a basket, the eldest and the youngest carrying one heavy log together on their shoulders; in the background the tukul, with the tied bundle of sticks hanging beside its doorway. Golden morning light, eye level, 28mm lens",
+      "seed": 101,
       "motion": {
-        "mode": "kenburns",
-        "kenburns": "zoom_out"
+        "mode": "wan",
+        "kenburns": "zoom_out",
+        "video_prompt": "the oxen pull the plough slowly forward, seed falls from the basket, the two brothers walk with the log, morning mist, slow camera"
       },
       "narration": {
-        "en": "Slow and steady wins the race. As the elders say: little by little, even an egg learns to walk.",
-        "spoken": "ቀስ ብሎ የማያቋርጥ ያሸንፋል። አበው እንዳሉት፦ ቀስ በቀስ እንቁላል በእግሩ ይሄዳል።",
+        "en": "From that day, the brothers worked as one. As the elders say: when spider webs unite, they can tie up a lion.",
+        "spoken": "ከዚያ ቀን ጀምሮ ወንድማማቾቹ እንደ አንድ ሰው ሠሩ። አበው እንዳሉት፦ ድር ቢያብር አንበሳ ያስር።",
         "locked": true
       }
     }
   ],
   "music": {
-    "caption": "playful Ethiopian-inspired instrumental for a children's fable, plucked krar, masenqo fiddle, light kebero hand drum, bright pentatonic melody, gentle comic pizzicato, a drowsy lullaby passage, building to a warm triumphant ending, acoustic, instrumental",
-    "bpm": 96,
-    "key": "D major",
+    "caption": "gentle, solemn Ethiopian-inspired instrumental, slow masenqo fiddle, low plucked begena-like lyre drones, a soft kebero drum like a slow heartbeat, sparse and reflective, rising warmly to a hopeful ending, acoustic, instrumental",
+    "bpm": 66,
+    "key": "A minor",
     "duration_s": 90,
     "candidates": 3,
     "seeds": [
@@ -302,23 +303,23 @@
     "cues": [
       {
         "at_shot": "s01",
-        "intent": "open softly, morning in the hills"
+        "intent": "enter softly from silence, evening stillness"
       },
       {
-        "at_shot": "s04",
-        "intent": "quick playful race theme as the rabbit sprints"
+        "at_shot": "s03",
+        "intent": "tense, unsettled under the quarrel"
       },
       {
-        "at_shot": "s06",
-        "intent": "slow drowsy lullaby while the rabbit sleeps"
-      },
-      {
-        "at_shot": "s08",
-        "intent": "tiptoe pizzicato as the tortoise passes"
+        "at_shot": "s07",
+        "intent": "hold back almost to silence for the lesson"
       },
       {
         "at_shot": "s09",
-        "intent": "build and lift to a warm triumphant finish, resolve into the end card"
+        "intent": "warm swell under the father's words"
+      },
+      {
+        "at_shot": "s10",
+        "intent": "hopeful, full and steady, resolve into the end card"
       }
     ]
   },
@@ -329,7 +330,7 @@
       "Motion: Wan 2.2 / FFmpeg",
       "Voice: Gemini TTS (synthetic voice)",
       "Music: ACE-Step 1.5",
-      "A retelling of Aesop's fable The Tortoise and the Hare"
+      "A retelling of the fable of the bundle of sticks"
     ],
     "duration_s": 3
   },

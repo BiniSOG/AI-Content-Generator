@@ -27,10 +27,10 @@ def run() -> None:
                                           model=sb["models"]["tts"], voice=sb.get("voice", {}).get("name", "Kore"),
                                           style=sb.get("voice", {}).get("style"), out_wav=d / "tts.wav", stage="smoke",
                                           lang_name=sb["language"].get("narration_name"))),
-        ("cloudflare image", lambda: cf_image("a tortoise walking on a red dirt path, " + sb["style"]["block"],
+        ("cloudflare image", lambda: cf_image("a bundle of wooden sticks tied with a leather cord on a wooden stool, " + sb["style"]["block"],
                                               model=sb["models"]["image"], seed=1, out_png=d / "image.png",
                                               width=512, height=512, stage="smoke")),
-        ("cloudflare image_alt", lambda: cf_image("a tortoise walking on a red dirt path",
+        ("cloudflare image_alt", lambda: cf_image("a bundle of wooden sticks tied with a leather cord on a wooden stool",
                                                   model=sb["models"]["image_alt"], seed=1, out_png=d / "image_alt.png",
                                                   width=512, height=512, stage="smoke")),
     ]
@@ -52,7 +52,7 @@ def _diagnose_flag(sb: dict, d) -> str:
     """FLUX.2 output was flagged on every seed. One extra call without the style block tells
     whether the style text is the trigger or the model/filter itself."""
     try:
-        cf_image("a tortoise walking on a red dirt path", model=sb["models"]["image"], seed=1,
+        cf_image("a bundle of wooden sticks tied with a leather cord on a wooden stool", model=sb["models"]["image"], seed=1,
                  out_png=d / "image_bare.png", width=512, height=512, stage="smoke")
         return ("-> the SAME prompt WITHOUT style.block passed, so a phrase in style.block is the trigger. "
                 "Reword style.block in storyboard.json (see FAILURES.md F05).")

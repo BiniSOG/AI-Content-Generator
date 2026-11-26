@@ -6,7 +6,7 @@
   python run.py <stage> [--only s03,s04]
   python run.py status               # what is cached / what would regenerate
 
-Stages: validate, smoke, models, script, narration, keyframes [--ref-only], ref-candidates [--only rabbit], shots, music, assemble,
+Stages: validate, smoke, models, script, narration, keyframes [--ref-only], ref-candidates [--only father], shots, music, assemble,
         experiments [--only e01], costs, kaggle-pack, check-audio
 Every stage reads storyboard.json; each output is cached by a hash of its inputs, so a re-run
 only regenerates what changed. Every model call is logged to runs.jsonl."""

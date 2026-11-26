@@ -1,5 +1,5 @@
 """Fill narration.spoken with hand-written Amharic and lock it (the script stage then skips
-the translation API for these lines). Written by hand for the tortoise-and-rabbit story
+the translation API for these lines). Written by hand for the bundle-of-sticks story
 (storyboard.json already holds them, locked); run this to restore them after editing.
 
 Only applies a line if the shot's English text still matches the one it was translated from,
@@ -15,26 +15,26 @@ ROOT = Path(__file__).resolve().parent.parent
 SB = ROOT / "storyboard.json"
 
 AM = {
-    "s01": ("Long ago, in the green hills, there lived a rabbit who was very fast, and a tortoise who was very slow.",
-            "ድሮ ድሮ፣ በአረንጓዴዎቹ ኮረብቶች ላይ በጣም ፈጣን ጥንቸልና በጣም ቀርፋፋ ኤሊ ይኖሩ ነበር።"),
-    "s02": ("The rabbit loved to laugh at the others. 'No one in these hills can beat me,' he said.",
-            "ጥንቸሉ በሌሎች መሳቅ ይወድ ነበር። «በእነዚህ ኮረብቶች ውስጥ ማንም ሊያሸንፈኝ አይችልም» አለ።"),
-    "s03": ("The tortoise looked up and said quietly, 'Then let us race, to the big warka tree.'",
-            "ኤሊዋ ቀና ብላ በለሆሳስ «እንግዲያው እስከ ትልቁ የዋርካ ዛፍ ድረስ እንሽቀዳደም» አለች።"),
-    "s04": ("All the animals came to watch. The rabbit laughed. And the race began.",
-            "እንስሳት ሁሉ ሊመለከቱ መጡ። ጥንቸሉ ሳቀ። ውድድሩም ተጀመረ።"),
-    "s05": ("In a moment, the rabbit was far ahead. He looked back, and the tortoise was only a small dot.",
-            "ጥንቸሉ በቅጽበት በጣም ቀደመ። ወደ ኋላ ቢመለከት ኤሊዋ ትንሽ ነጥብ ብቻ ሆና ታየች።"),
-    "s06": ("'I have plenty of time,' he thought. He lay down in the shade beside the road, and fell asleep.",
-            "«ብዙ ጊዜ አለኝ» ብሎ አሰበ። ከመንገዱ ዳር ጥላ ስር ተኝቶ እንቅልፍ ወሰደው።"),
-    "s07": ("The tortoise did not stop. One step, then another, all through the hot afternoon.",
-            "ኤሊዋ አላቆመችም። አንድ እርምጃ፣ ከዚያም ሌላ፣ በሞቃቱ ከሰዓት በኋላ ሁሉ።"),
-    "s08": ("Slowly, quietly, she walked past the sleeping rabbit.",
-            "ቀስ ብላ፣ በጸጥታ፣ ከተኛው ጥንቸል አጠገብ አልፋ ሄደች።"),
-    "s09": ("When the rabbit woke up, he ran as fast as he could. But the tortoise was already at the tree.",
-            "ጥንቸሉ ሲነቃ የቻለውን ያህል ሮጠ። ኤሊዋ ግን ቀድማ ዛፉ ጋ ደርሳ ነበር።"),
-    "s10": ("Slow and steady wins the race. As the elders say: little by little, even an egg learns to walk.",
-            "ቀስ ብሎ የማያቋርጥ ያሸንፋል። አበው እንዳሉት፦ ቀስ በቀስ እንቁላል በእግሩ ይሄዳል።"),
+    "s01": ("In a village in the highlands, an old farmer, Abba Tesfaye, lay sick in his bed.",
+            "በደጋው መንደር ውስጥ፣ አባ ተስፋዬ የሚባሉ አንድ አዛውንት ገበሬ ታመው በአልጋቸው ላይ ተኝተው ነበር።"),
+    "s02": ("He knew his time was near. And one thing troubled him more than his illness.",
+            "ጊዜያቸው እንደቀረበ ያውቁ ነበር። ከሕመማቸው በላይ ግን አንድ ነገር ያሳስባቸው ነበር።"),
+    "s03": ("His five sons were strong, but they always quarrelled: over the land, over the oxen, over everything.",
+            "አምስቱ ልጆቻቸው ብርቱዎች ነበሩ፤ ግን ሁልጊዜ ይጣሉ ነበር፦ በመሬቱ፣ በበሬዎቹ፣ በሁሉም ነገር።"),
+    "s04": ("So he called all five of his sons to his bedside.",
+            "ስለዚህ አምስቱንም ልጆቻቸውን ወደ አልጋቸው አጠገብ ጠሯቸው።"),
+    "s05": ("He gave them a bundle of sticks, tied tightly together. 'Break it,' he said.",
+            "በጥብቅ የታሰረ አንድ እስር እንጨት ሰጧቸው። «ስበሩት» አሉ።"),
+    "s06": ("One by one, each son tried with all his strength. No one could break it.",
+            "አንድ በአንድ እያንዳንዱ ልጅ በሙሉ ኃይሉ ሞከረ። ማንም ሊሰብረው አልቻለም።"),
+    "s07": ("Then he untied the bundle and gave each son a single stick. 'Now break yours.'",
+            "ከዚያም እስሩን ፈትተው ለእያንዳንዱ ልጅ አንድ አንድ እንጨት ሰጡ። «አሁን የራሳችሁን ስበሩ።»"),
+    "s08": ("Each stick snapped easily.",
+            "እያንዳንዱ እንጨት በቀላሉ ተሰበረ።"),
+    "s09": ("'My sons,' he said, 'alone, you are like one stick. Together, no one can break you.'",
+            "«ልጆቼ» አሉ፤ «ብቻችሁን ስትሆኑ እንደ አንድ እንጨት ናችሁ። አንድ ስትሆኑ ግን ማንም ሊሰብራችሁ አይችልም።»"),
+    "s10": ("From that day, the brothers worked as one. As the elders say: when spider webs unite, they can tie up a lion.",
+            "ከዚያ ቀን ጀምሮ ወንድማማቾቹ እንደ አንድ ሰው ሠሩ። አበው እንዳሉት፦ ድር ቢያብር አንበሳ ያስር።"),
 }
 
 sb = json.loads(SB.read_text(encoding="utf-8"))

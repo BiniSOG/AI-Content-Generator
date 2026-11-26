@@ -11,7 +11,7 @@ Each entry changes **one thing**, with the seed fixed, unless the seed is the th
 - **Decision:** TODO(you)
 
 ### E02: reference image vs text-only character
-- **Hypothesis:** Conditioning on the character reference keeps the tortoise and the rabbit recognisable better than describing them in text alone.
+- **Hypothesis:** Conditioning on the character reference keeps the father and his sons recognisable better than describing them in text alone.
 - **Change:** FLUX.2 `input_image` refs on (A) vs off (B). Fixed: shot s04, seed, prompt.
 - **Result:** TODO(you)
 - **Decision:** TODO(you)
