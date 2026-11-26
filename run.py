@@ -30,8 +30,10 @@ def main() -> None:
     common.load_env()
 
     if c == "validate":
-        common.load_storyboard()
+        sb = common.load_storyboard()
         print("storyboard.json is valid")
+        for w in common.image_filter_risks(sb):
+            print(f"  warning (image safety filter may flag this): {w}")
         return
     if c == "smoke":
         from pipeline import smoke

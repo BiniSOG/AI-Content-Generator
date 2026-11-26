@@ -19,7 +19,7 @@
     "music": "ACE-Step-1.5"
   },
   "style": {
-    "block": "hand-painted gouache illustration, warm earthy palette of ochre, terracotta, cream and deep green, soft golden morning light, visible paper grain, gentle brush texture, intimate and nostalgic, subject centred in frame, no text, no letters",
+    "block": "hand-painted gouache illustration, warm earthy palette of ochre, terracotta, cream and deep green, soft golden morning light, visible paper grain, gentle brush texture, warm homely family atmosphere, nostalgic, subject centred in frame, no text, no letters",
     "negative": "photorealistic, 3d render, text, watermark, extra fingers, deformed hands, harsh contrast, neon",
     "golden_ref": null
   },
@@ -34,7 +34,7 @@
     {
       "id": "liya",
       "name": "Liya (granddaughter, age 10)",
-      "description": "Liya, a ten-year-old Ethiopian girl, braided hair tied back, round face, big curious eyes, mustard-yellow cardigan over a simple white dress",
+      "description": "Liya, Etenesh's ten-year-old granddaughter, braided hair tied back, round face, big curious eyes, mustard-yellow cardigan over a simple white dress",
       "real_person": false,
       "ref_seed": 2202
     }
@@ -72,7 +72,7 @@
       "id": "s04", "beat": "Sharing the smoke",
       "reason": "Introduces Liya and the first contact between the two: the smoke is passed to her.",
       "shot_size": "medium", "duration_s": 7, "characters": ["etenesh", "liya"],
-      "image_prompt": "medium shot, Etenesh holding the smoking roasting pan toward Liya, Liya leaning in with closed eyes to smell the smoke, both smiling, inside the warm hut",
+      "image_prompt": "medium shot inside the warm hut, grandmother Etenesh holds the flat iron pan of freshly roasted coffee beans toward her granddaughter Liya, who breathes in the coffee aroma with a happy smile, both smiling",
       "seed": 44,
       "motion": {"mode": "kenburns", "kenburns": "pan_left"},
       "narration": {"en": "She carried the smoke around the room, so everyone could greet it."}
@@ -99,7 +99,7 @@
       "id": "s07", "beat": "The handover",
       "reason": "Turning point: the grandmother passes the jebena to Liya. The line of dialogue carries the theme.",
       "shot_size": "close_up", "duration_s": 9, "characters": ["etenesh", "liya"],
-      "image_prompt": "close-up, Etenesh's old hands gently guiding Liya's small hands as Liya holds the black clay jebena for the first time, warm light, faces softly out of focus behind",
+      "image_prompt": "close-up, grandmother Etenesh teaching her granddaughter Liya to hold the black clay jebena coffee pot for the first time, the grandmother's old hands helping the girl's small hands, warm light, faces softly out of focus behind",
       "seed": 77,
       "motion": {"mode": "kenburns", "kenburns": "zoom_in"},
       "narration": {"en": "One day she put the jebena in my hands. Slowly, she said. Coffee is not about the coffee."}
@@ -117,7 +117,7 @@
       "id": "s09", "beat": "Now",
       "reason": "The empty stool tells us she is gone without saying it; the narrator now keeps the ritual alive.",
       "shot_size": "medium", "duration_s": 9, "characters": [],
-      "image_prompt": "medium shot of a small modern apartment kitchen at dawn, a flat iron pan of coffee beans smoking on a small stove, an empty low wooden stool beside it with a white netela shawl with green-yellow-red border folded on it, soft window light",
+      "image_prompt": "medium shot of a small modern apartment kitchen at dawn, a flat iron pan of coffee beans roasting on a small stove, a thin wisp of coffee smoke, an empty low wooden stool beside it with a white netela shawl with green-yellow-red border folded on it, soft window light",
       "seed": 99,
       "motion": {"mode": "kenburns", "kenburns": "zoom_out"},
       "narration": {"en": "Now I roast coffee far from home. And every morning, the smoke still finds me. So does she.", "lead_in_s": 0.8}

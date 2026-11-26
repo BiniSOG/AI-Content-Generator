@@ -30,7 +30,8 @@ def shot_prompt(sb: dict, shot: dict) -> str:
     if who:
         parts.append(f"Characters: {who}")
     parts.append(sb["style"]["block"])
-    parts.append(f"Avoid: {sb['style']['negative']}")
+    # No "Avoid: <negative>" here: FLUX has no negative prompt, so those words (deformed hands,
+    # extra fingers...) went into the *positive* prompt. style.negative is still used by Wan.
     return ". ".join(parts)
 
 

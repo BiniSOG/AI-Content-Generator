@@ -61,7 +61,7 @@ output = outputs/<stage>/<shot>-<key>.<ext>      # immutable, never overwritten
 |---|---|
 | script | English line, language, text model |
 | narration | spoken line, voice, style instruction, TTS model |
-| keyframes | full prompt (shot + character descriptions + style block + negative), seed, model, size, **hashes of the reference images** |
+| keyframes | full prompt (shot + character descriptions + style block; the negative goes only to Wan, since FLUX has no negative prompt), seed, model, size, **hashes of the reference images** |
 | shots | hash of the keyframe or Wan clip, motion, length, output size |
 | music | hash of the chosen candidate, loudness target |
 | assemble | hashes of every shot, narration and score file, plus the music and end-card settings |

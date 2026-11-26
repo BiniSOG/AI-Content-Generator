@@ -27,10 +27,15 @@ The format is **what broke → what I tried → what fixed it or how I worked ar
 - **Evidence:** the smoke log line for `@cf/black-forest-labs/flux-1-schnell`, status error, HTTP 400.
 
 ### F05: FLUX.2 klein output flagged by Cloudflare's safety filter (code 3030)
-- **What broke:** At the smoke test, `@cf/black-forest-labs/flux-2-klein-4b` returned HTTP 400 for "a clay coffee pot on a wooden table" in the gouache style: `AiError: Your output has been flagged. Please choose another prompt / input image combination` (code 3030). FLUX.1 schnell drew the same scene without a problem.
-- **Tried:** retrying. The same prompt and seed give the same image, so it gets flagged again. The filter checks the *output*, so this is a false positive on that one image, not a problem with the prompt.
-- **Fix:** `cf_image` catches code 3030 on FLUX.2 and tries again at seed+1000, then seed+2000. The sequence is fixed, so the keyframe stays reproducible. runs.jsonl records `requested_seed` and `seed_used`. If all three seeds are flagged, the keyframes stage falls back to `image_alt` as before.
-- **Evidence:** the smoke line in runs.jsonl with `status: error` and code 3030; `pipeline/providers.py::cf_image`.
+- **What broke:** At the smoke test, `@cf/black-forest-labs/flux-2-klein-4b` returned HTTP 400 for "a clay coffee pot on a wooden table" plus the style block: `AiError: Your output has been flagged. Please choose another prompt / input image combination` (code 3030). This happened in two runs in a row at the same seed. FLUX.1 schnell, given the prompt *without* the style block, drew the scene without a problem.
+- **Diagnosis:** the flag is deterministic, so it's the wording, not bad luck. The style block (added to every keyframe) said **"intimate and nostalgic"**. "Intimate" is a well-known sexual-content trigger, and the storyboard has a ten-year-old character (Liya) in s04/s07/s08, the combination filters block hardest. s04 also had the child "leaning in with closed eyes to smell the smoke" from a "smoking" pan (minor + smoking). Had it gone unfixed, most keyframes would have quietly fallen back to schnell, which takes no seed and no reference images, so character consistency would have been lost.
+- **Fix:**
+  1. Reworded `style.block` ("warm homely family atmosphere, nostalgic"), named Liya as Etenesh's granddaughter, and rewrote s04, s07 and s09 without "smoking"/"closed eyes". All of these change cache keys, so the refs and keyframes regenerate once.
+  2. `python run.py validate` and `smoke` now warn about filter-prone wording (`common.image_filter_risks`), with a stricter word list for shots that include a minor.
+  3. `cf_image` retries a flagged FLUX.2 output at seed+1000, then seed+2000 (fixed sequence, so still reproducible; `seed_used` is in runs.jsonl).
+  4. If the smoke image is still flagged, it makes one call without the style block and reports whether the style text or the filter itself is at fault.
+  5. Removed `Avoid: <negative>` from FLUX prompts. FLUX has no negative prompt, so "deformed hands, extra fingers" was going into the *positive* prompt. `style.negative` is still passed to Wan.
+- **Evidence:** smoke lines in runs.jsonl with code 3030; `pipeline/providers.py::cf_image`, `pipeline/common.py::image_filter_risks`, `pipeline/smoke.py::_diagnose_flag`.
 
 ### F06: TODO(you), the next real failure from your run
 - **What broke:**

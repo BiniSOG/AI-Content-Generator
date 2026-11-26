@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import os
 import shutil
 import subprocess
@@ -87,6 +88,44 @@ def validate_storyboard(sb: dict) -> None:
                 problems.append(f"  - characters/{c['id']}: real_person=true but no 'CONSENT:{c['id']}' record in ETHICS.md")
     if problems:
         sys.exit("[validate] storyboard.json is invalid:\n" + "\n".join(problems))
+
+
+# Words that hosted image filters (Cloudflare Workers AI code 3030 "output has been flagged")
+# tend to react to. Harmless in context, but filters don't read context. See FAILURES.md F05.
+_RISKY_ALWAYS = ("intimate", "sensual", "seductive", "sexy", "nude", "naked", "undress", "lingerie",
+                 "bare skin", "bathing", "blood", "gore", "wound", "weapon", "gun", "drunk")
+_RISKY_WITH_MINOR = ("smoking", "smoke", "cigarette", "kiss", "bed", "bath", "touch", "caress",
+                     "embrace", "closed eyes", "lap", "alone with")
+_MINOR_HINTS = ("child", "girl", "boy", "kid", "toddler", "granddaughter", "grandson", "-year-old")
+
+
+def _is_minor(desc: str) -> bool:
+    d = desc.lower()
+    m = re.search(r"(\d+)-year-old", d)
+    if m:
+        return int(m.group(1)) < 18
+    return any(h in d for h in _MINOR_HINTS if h != "-year-old")
+
+
+def image_filter_risks(sb: dict) -> list[str]:
+    """Warnings for image-prompt wording likely to trip a hosted safety filter."""
+    out = []
+    chars = {c["id"]: c for c in sb.get("characters", [])}
+    style = sb.get("style", {}).get("block", "")
+    for w in _RISKY_ALWAYS:
+        if re.search(rf"\b{re.escape(w)}\b", style, re.I):
+            out.append(f"style.block contains '{w}' (added to EVERY keyframe prompt)")
+    for s in sb.get("shots", []):
+        text = s.get("image_prompt", "")
+        for w in _RISKY_ALWAYS:
+            if re.search(rf"\b{re.escape(w)}\b", text, re.I):
+                out.append(f"shots/{s['id']}: image_prompt contains '{w}'")
+        minors = [c for c in s.get("characters", []) if c in chars and _is_minor(chars[c].get("description", ""))]
+        if minors:
+            for w in _RISKY_WITH_MINOR:
+                if re.search(rf"\b{re.escape(w)}\b", text, re.I):
+                    out.append(f"shots/{s['id']}: '{w}' in a shot with a minor ({', '.join(minors)})")
+    return out
 
 
 def save_storyboard(sb: dict) -> None:
