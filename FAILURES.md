@@ -18,6 +18,7 @@ The format is **what broke → what I tried → what fixed it or how I worked ar
 - **Tried:** the built-in retries. Waiting doesn't help a pipeline that has to run now.
 - **Fix:** a model fallback chain configured in the storyboard (`models.text_fallbacks`, `models.tts_fallbacks`). Each model gets 2 attempts and then the next one is tried. The log line records the model actually used and the `requested_model`, so a fallback is visible in runs.jsonl. The fallback models came from the list the smoke test printed, so they're confirmed to exist for this key.
 - **Evidence:** the smoke lines in runs.jsonl with `status: error, attempts: 4`; `pipeline/providers.py::_gemini_post`.
+- **Follow-up:** the 2-attempts-per-model chain still failed when `gemini-3.8-flash` and `gemini-3.7-flash` were both overloaded: it spent ~12 s of backoff on each busy model before moving on. Now each model in the chain is tried **once per round**, and the pipeline waits (5/15/30 s) only after a whole round fails, for up to 4 rounds. Models that return a non-retryable 4xx are dropped from the chain. The chain also gained `gemini-flash-latest` and two flash-lite models, which are usually less loaded. Errors are logged as `HTTP 503: <message>` and not as raw JSON. The extra `round` field in runs.jsonl shows which pass succeeded.
 
 ### F04: FLUX.1 schnell on Cloudflare rejects `seed`
 - **What broke:** The fallback image model returned HTTP 400: "Additional or unevaluated properties '/seed' at '/' not allowed".

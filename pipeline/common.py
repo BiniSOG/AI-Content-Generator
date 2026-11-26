@@ -172,7 +172,18 @@ def log_call(*, stage: str, provider: str, model: str, params: dict, seed, laten
 
 # ---------------------------------------------------------------- HTTP with retries
 class CallFailed(Exception):
-    pass
+    def __init__(self, msg: str, status: int | None = None):
+        super().__init__(msg)
+        self.status = status  # HTTP status of the last attempt (None for timeouts/connection errors)
+
+
+def _short_error(r) -> str:
+    """'HTTP 503: This model is currently experiencing high demand...' instead of a raw JSON dump."""
+    try:
+        msg = r.json().get("error", {}).get("message")
+    except Exception:
+        msg = None
+    return f"HTTP {r.status_code}: {msg or r.text[:300]}"
 
 
 def http_call(method: str, url: str, *, log: dict, max_attempts: int = 4, timeout: int = 180, **kwargs):
@@ -181,30 +192,38 @@ def http_call(method: str, url: str, *, log: dict, max_attempts: int = 4, timeou
     import requests
     t0 = time.time()
     last_err = None
+    last_status = None
     for attempt in range(1, max_attempts + 1):
+        is_last = attempt == max_attempts
         try:
             r = requests.request(method, url, timeout=timeout, **kwargs)
+            last_status = r.status_code
             if r.status_code == 429 or r.status_code >= 500:
-                last_err = f"HTTP {r.status_code}: {r.text[:300]}"
+                last_err = _short_error(r)
+                if is_last:
+                    break
                 wait = min(60, 2 ** attempt * 2)
                 ra = r.headers.get("Retry-After")
                 if ra and ra.isdigit():
                     wait = min(90, int(ra))
-                say(log.get("stage", "http"), f"attempt {attempt} failed ({last_err[:80]}), retrying in {wait}s")
+                say(log.get("stage", "http"), f"attempt {attempt} failed ({last_err[:100]}), retrying in {wait}s")
                 time.sleep(wait)
                 continue
             if r.status_code >= 400:
-                last_err = f"HTTP {r.status_code}: {r.text[:500]}"
+                last_err = _short_error(r)
                 break  # client error: retrying will not help
             log_call(**log, latency_s=time.time() - t0, status="ok", attempts=attempt)
             return r
         except requests.RequestException as e:
+            last_status = None
             last_err = f"{type(e).__name__}: {e}"
+            if is_last:
+                break
             wait = min(60, 2 ** attempt * 2)
-            say(log.get("stage", "http"), f"attempt {attempt} error ({last_err[:80]}), retrying in {wait}s")
+            say(log.get("stage", "http"), f"attempt {attempt} error ({last_err[:100]}), retrying in {wait}s")
             time.sleep(wait)
     log_call(**log, latency_s=time.time() - t0, status="error", attempts=attempt, error=last_err)
-    raise CallFailed(last_err)
+    raise CallFailed(last_err, status=last_status)
 
 
 # ---------------------------------------------------------------- ffmpeg

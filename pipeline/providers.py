@@ -28,27 +28,41 @@ def _fallbacks(model: str) -> list[str]:
     return [model]
 
 
-def _gemini_post(model: str, body: dict, *, log: dict, timeout: int):
-    """POST to the first model in the fallback chain that answers. Each model gets 2 attempts
-    (the last one gets 4) before moving on; every attempt chain is logged under the model it used.
-    Returns (response, model_used)."""
+def _gemini_post(model: str, body: dict, *, log: dict, timeout: int, rounds: int = 4):
+    """POST to the first model in the fallback chain that answers.
+
+    A 503 means *that model* is overloaded, so instead of burning several backoff retries on
+    one model we try each model in the chain once per round, and only wait (5, 15, 30 s) after
+    a whole round failed. Models that answer with a non-retryable 4xx (bad model ID, bad request
+    for that model) are dropped from the chain. Returns (response, model_used)."""
+    import time
     key = need_env("GEMINI_API_KEY")
     chain = _fallbacks(model)
+    stage = log.get("stage", "gemini")
+    waits = [5, 15, 30]
     last = None
-    for i, m in enumerate(chain):
-        is_last = i == len(chain) - 1
-        try:
-            r = http_call("POST", f"{GEMINI}/models/{m}:generateContent",
-                          headers={"x-goog-api-key": key, "Content-Type": "application/json"},
-                          json=body, timeout=timeout, max_attempts=4 if is_last else 2,
-                          log={**log, "model": m, "extra": {"requested_model": model}})
-            if m != model:
-                say(log.get("stage", "gemini"), f"used fallback model {m} (requested {model})")
-            return r, m
-        except CallFailed as e:
-            last = e
-            if not is_last:
-                say(log.get("stage", "gemini"), f"{m} unavailable ({str(e)[:60]}); trying {chain[i+1]}")
+    for rnd in range(rounds):
+        for m in list(chain):
+            try:
+                r = http_call("POST", f"{GEMINI}/models/{m}:generateContent",
+                              headers={"x-goog-api-key": key, "Content-Type": "application/json"},
+                              json=body, timeout=timeout, max_attempts=1,
+                              log={**log, "model": m, "extra": {"requested_model": model, "round": rnd + 1}})
+                if m != model:
+                    say(stage, f"used fallback model {m} (requested {model})")
+                return r, m
+            except CallFailed as e:
+                last = e
+                retryable = e.status is None or e.status == 429 or e.status >= 500
+                if not retryable:
+                    chain.remove(m)
+                say(stage, f"{m} unavailable ({str(e)[:90]})" + ("" if retryable else "; dropping it"))
+        if not chain:
+            break
+        if rnd < rounds - 1:
+            wait = waits[min(rnd, len(waits) - 1)]
+            say(stage, f"all models busy (round {rnd + 1}/{rounds}); retrying the chain in {wait}s")
+            time.sleep(wait)
     raise last
 
 
