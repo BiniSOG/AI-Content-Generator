@@ -41,6 +41,7 @@ def _gemini_post(model: str, body: dict, *, log: dict, timeout: int, rounds: int
     stage = log.get("stage", "gemini")
     waits = [5, 15, 30]
     last = None
+    errors: dict[str, str] = {}
     for rnd in range(rounds):
         for m in list(chain):
             try:
@@ -53,6 +54,7 @@ def _gemini_post(model: str, body: dict, *, log: dict, timeout: int, rounds: int
                 return r, m
             except CallFailed as e:
                 last = e
+                errors[m] = str(e)[:160]
                 retryable = e.status is None or e.status == 429 or e.status >= 500
                 if not retryable:
                     chain.remove(m)
@@ -63,7 +65,9 @@ def _gemini_post(model: str, body: dict, *, log: dict, timeout: int, rounds: int
             wait = waits[min(rnd, len(waits) - 1)]
             say(stage, f"all models busy (round {rnd + 1}/{rounds}); retrying the chain in {wait}s")
             time.sleep(wait)
-    raise last
+    summary = "; ".join(f"{m}: {err}" for m, err in errors.items())
+    raise CallFailed(f"every model in the chain failed after {rnd + 1} round(s) -- {summary}",
+                     status=getattr(last, "status", None))
 
 
 # ---------------------------------------------------------------- Gemini text
