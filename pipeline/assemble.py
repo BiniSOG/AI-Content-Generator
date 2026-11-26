@@ -11,7 +11,7 @@ import json
 import time
 from pathlib import Path
 
-from .common import OUT, cache_key, cached, duration_of, ffmpeg, ffmpeg_capture, file_hash, load_storyboard, log_call, out_dir, say
+from .common import OUT, audio_stats, cache_key, cached, duration_of, is_silent, ffmpeg, ffmpeg_capture, file_hash, load_storyboard, log_call, out_dir, say
 from . import narration, shots, subtitles
 
 STAGE = "assemble"
@@ -166,11 +166,15 @@ def run(sb: dict | None = None, only=None) -> list[str]:
         say(STAGE, "nothing changed since last assembly (cached)")
         return []
     voice = build_voice(sb, starts, total, d / "voice.wav")
+    if is_silent(voice):
+        raise SystemExit("[assemble] the voice track is SILENT. Run: python run.py check-audio")
     mix = build_mix(sb, voice, total, d / "mix.wav")
     vd = narration.durations()
     srt = subtitles.build_srt(sb, starts, vd, d / "subtitles_en.srt")
     for tag, ((w, h), path) in outs.items():
         export(sb, tag, w, h, mix, srt, total, path)
+        if is_silent(path):
+            raise SystemExit(f"[assemble] {path.name} has no audible audio. Run: python run.py check-audio")
         say(STAGE, f"wrote {path.relative_to(OUT.parent)} ({duration_of(path):.1f}s)")
     (d / "timeline.json").write_text(json.dumps({"starts": starts, "picture_s": total,
                                                  "with_end_card_s": total + sb["end_card"]["duration_s"]}, indent=2))
@@ -207,3 +211,21 @@ def radio_cut(sb: dict | None = None) -> Path:
              latency_s=time.time() - t0, status="ok", attempts=1, output=str(out))
     say("radio_cut", f"wrote outputs/radio_cut/radio_cut.mp4 and .mp3 ({total:.1f}s)")
     return out
+
+
+def check_audio(sb: dict | None = None) -> None:
+    """Print duration and peak level of every audio file in the chain, so a silent link is obvious."""
+    sb = sb or load_storyboard()
+    rows = [OUT / "narration" / f"{s['id']}.wav" for s in sb["shots"]]
+    rows += [OUT / "music" / "score.wav", OUT / "final" / "voice.wav", OUT / "final" / "mix.wav",
+             OUT / "final" / "film_16x9.mp4", OUT / "final" / "film_9x16.mp4"]
+    print(f"{'file':42} {'seconds':>8} {'peak dB':>8}  verdict")
+    for p in rows:
+        if not p.exists():
+            print(f"{str(p.relative_to(OUT.parent)):42} {'-':>8} {'-':>8}  MISSING")
+            continue
+        dur, mx = audio_stats(p)
+        verdict = "ok" if not is_silent(p) else "SILENT / EMPTY"
+        print(f"{str(p.relative_to(OUT.parent)):42} {dur:8.1f} {mx:8.1f}  {verdict}")
+    print("The first SILENT/MISSING row is where the audio is lost. Narration rows silent -> "
+          "python run.py narration (silent files now regenerate automatically).")

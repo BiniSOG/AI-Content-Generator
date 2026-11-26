@@ -39,7 +39,8 @@ for s in SB["shots"]:
     kf = ROOT_IN / "keyframes" / f"{s['id']}.png"
     img = load_image(str(kf)).resize((W, H))
     prompt = s["motion"].get("video_prompt") or "gentle slow motion, static camera"
-    neg = "fast motion, morphing, warping, flicker, distorted face, extra fingers, text, watermark"
+    neg = ("fast motion, morphing, warping, flicker, distorted face, extra fingers, text, watermark, "
+           + SB["style"].get("negative", ""))
     t0 = time.time(); status, err = "ok", None
     try:
         g = torch.Generator("cpu").manual_seed(s["seed"])

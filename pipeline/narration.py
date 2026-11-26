@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 
-from .common import cache_key, cached, duration_of, link_current, load_storyboard, out_dir, say
+from .common import audio_stats, cache_key, cached, duration_of, is_silent, link_current, load_storyboard, out_dir, say
 from .providers import gemini_tts
 
 STAGE = "narration"
@@ -23,6 +23,10 @@ def run(sb: dict | None = None, only: set[str] | None = None) -> list[str]:
         text = s["narration"].get("spoken") or s["narration"]["en"]
         key = cache_key(text, voice, style, model)
         target = d / f"{s['id']}-{key}.wav"
+        if cached(target) and is_silent(target):
+            dur, mx = audio_stats(target)
+            say(STAGE, f"{s['id']}: cached audio is silent ({dur:.1f}s, peak {mx} dB); regenerating")
+            target.unlink()
         if (only is None or s["id"] in only) and not cached(target):
             say(STAGE, f"{s['id']}: generating ({len(text)} chars)")
             gemini_tts(text, model=model, voice=voice, style=style, out_wav=target,

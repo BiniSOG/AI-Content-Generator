@@ -34,7 +34,8 @@ _BUSY_UNTIL: dict[str, float] = {}
 BUSY_COOLDOWN_S = 180
 
 
-def _gemini_post(model: str, body: dict, *, log: dict, timeout: int, rounds: int = 4):
+def _gemini_post(model: str, body: dict, *, log: dict, timeout: int, rounds: int = 4,
+                 exclude: set[str] | None = None):
     """POST to the first model in the fallback chain that answers.
 
     - A 503 means *that model* is overloaded, so each model is tried once per round and the
@@ -46,7 +47,9 @@ def _gemini_post(model: str, body: dict, *, log: dict, timeout: int, rounds: int
     - Models answering a non-retryable 4xx are dropped. Returns (response, model_used)."""
     import time
     key = need_env("GEMINI_API_KEY")
-    chain = _fallbacks(model)
+    chain = [m for m in _fallbacks(model) if m not in (exclude or set())]
+    if not chain:
+        raise CallFailed(f"no models left to try (excluded: {', '.join(sorted(exclude or []))})")
     stage = log.get("stage", "gemini")
     waits = [5, 15, 30]
     last = None
@@ -115,6 +118,10 @@ def gemini_list_models() -> list[str]:
 # ---------------------------------------------------------------- Gemini TTS
 def gemini_tts(text: str, *, model: str, voice: str, style: str | None, out_wav: Path,
                stage: str = "narration", shot: str | None = None, cache_key: str | None = None) -> Path:
+    """Speak `text` to out_wav. A model that answers HTTP 200 but with silent or near-empty audio
+    (seen when a TTS model doesn't really support the language, e.g. Amharic) counts as a failure,
+    and the next model in models.tts_fallbacks is tried."""
+    from .common import is_silent, audio_stats
     spoken = f"{style}\n\n{text}" if style else text
     body = {
         "contents": [{"parts": [{"text": spoken}]}],
@@ -123,30 +130,53 @@ def gemini_tts(text: str, *, model: str, voice: str, style: str | None, out_wav:
             "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": voice}}},
         },
     }
-    r, _ = _gemini_post(model, body, timeout=180,
-                        log=dict(stage=stage, shot=shot, provider="gemini",
-                                 params={"voice": voice, "style": style, "chars": len(text)},
-                                 seed=None, cache_key=cache_key, output=str(out_wav),
-                                 units=len(text), unit="chars"))
-    data = r.json()
+    # ~0.04 s per character is very fast speech; less than that means the audio is truncated.
+    min_s = max(0.8, min(len(text) * 0.04, 4.0))
+    tried: set[str] = set()
+    while True:
+        r, used = _gemini_post(model, body, timeout=180, exclude=tried,
+                               log=dict(stage=stage, shot=shot, provider="gemini",
+                                        params={"voice": voice, "style": style, "chars": len(text)},
+                                        seed=None, cache_key=cache_key, output=str(out_wav),
+                                        units=len(text), unit="chars"))
+        _write_tts_audio(r.json(), out_wav)
+        dur, mx = audio_stats(out_wav)
+        if not is_silent(out_wav, min_s=min_s):
+            return out_wav
+        tried.add(used)
+        say(stage, f"{used} returned unusable audio ({dur:.1f}s, peak {mx} dB) for {len(text)} chars; "
+                   f"trying the next TTS model")
+        out_wav.unlink(missing_ok=True)
+
+
+def _write_tts_audio(data: dict, out_wav: Path) -> None:
     try:
         part = next(p for p in data["candidates"][0]["content"]["parts"] if "inlineData" in p)
     except (KeyError, IndexError, StopIteration):
         raise CallFailed(f"no audio in TTS response: {json.dumps(data)[:400]}")
-    pcm = base64.b64decode(part["inlineData"]["data"])
-    mime = part["inlineData"].get("mimeType", "")
-    m = re.search(r"rate=(\d+)", mime)
-    rate = int(m.group(1)) if m else 24000
+    raw = base64.b64decode(part["inlineData"]["data"])
+    mime = part["inlineData"].get("mimeType", "").lower()
     out_wav.parent.mkdir(parents=True, exist_ok=True)
-    if pcm[:4] == b"RIFF":
-        out_wav.write_bytes(pcm)
-    else:  # raw 16-bit little-endian mono PCM
+    if raw[:4] == b"RIFF":
+        out_wav.write_bytes(raw)
+    elif "l16" in mime or "pcm" in mime or not mime:
+        # raw 16-bit little-endian mono PCM (what Gemini TTS normally returns)
+        m = re.search(r"rate=(\d+)", mime)
+        rate = int(m.group(1)) if m else 24000
         with wave.open(str(out_wav), "wb") as w:
             w.setnchannels(1)
             w.setsampwidth(2)
             w.setframerate(rate)
-            w.writeframes(pcm)
-    return out_wav
+            w.writeframes(raw)
+    else:
+        # a compressed format (mp3/ogg/...): let ffmpeg decode it instead of writing noise
+        from .common import ffmpeg
+        ext = {"audio/mpeg": ".mp3", "audio/mp3": ".mp3", "audio/ogg": ".ogg", "audio/opus": ".opus",
+               "audio/flac": ".flac", "audio/aac": ".aac"}.get(mime.split(";")[0], ".bin")
+        tmp = out_wav.with_suffix(ext)
+        tmp.write_bytes(raw)
+        ffmpeg(["-i", str(tmp), "-ac", "1", "-ar", "24000", str(out_wav)])
+        tmp.unlink(missing_ok=True)
 
 
 # ---------------------------------------------------------------- Cloudflare FLUX

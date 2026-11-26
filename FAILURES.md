@@ -42,7 +42,16 @@ The format is **what broke → what I tried → what fixed it or how I worked ar
 - **Fix:** (1) The character descriptions now name Habesha features (rich brown skin, oval face, high cheekbones, slim nose, almond-shaped eyes, curled grey hair, shuruba braids) and clothing (habesha kemis, tibeb border). The style block says "rich natural brown skin tones". The ref prompt leads with "authentic Ethiopian Habesha appearance" and puts the face portrait first. `python run.py ref-candidates` renders 4 seeds per character, so a human can pick the best face and set `ref_seed`. (2) `_gemini_post` remembers models that were busy in the last 3 minutes and tries the others first, so after the first line finds a working fallback, the next lines go straight to it. Early rounds also use half the timeout.
 - **Evidence:** outputs/refs/candidates/*.png; the `round` and `requested_model` fields in runs.jsonl.
 
-### F07: TODO(you), the next real failure from your run
+### F07: still not Ethiopian, cups held wrong, final film without audio
+- **What broke:** (1) The faces and the grandmother's hair still didn't read as Ethiopian. (2) In the keyframes, people held cups in the wrong place. (3) The final video had no audible audio.
+- **Diagnosis:** (1) The painted gouache style pulls faces toward a generic illustration, and the descriptions named features but not the visual markers that really identify an elderly Orthodox Amhara woman: hair in fine shuruba braids under a netela draped over the head, a forehead cross tattoo, the habesha kemis with tibeb. The two-panel "reference sheet" also gave FLUX.2 a split image to copy from. (2) The prompts never said which hand holds what, where, or which way up, and a 4B model fills those gaps at random. (3) The export command is correct; the offline test produces audible audio. Nothing in the pipeline checked that the TTS audio was really speech, so a TTS model returning near-silent audio (a known failure for languages a model doesn't fully support, like Amharic) or a non-PCM format would produce a silent film without any error.
+- **Fix:**
+  1. Style changed to a cinematic, realistic film still. Full descriptions are used for the reference portrait (now one waist-up portrait, not a two-panel sheet); a compact `short` description goes into shot prompts, which have a 2048-character limit (now checked).
+  2. Every shot prompt was rewritten to follow the real buna ceremony (roast in the menkeshkesh over the brazier, waft the aroma, grind in the mukecha, pour abol from a height, the child serves the eldest first) with exact hand and object positions: who holds what, with which hand, at what height, cups upright on the tray under the spout.
+  3. Audio is now checked at every step: TTS output that is silent or too short for its text counts as a failure and the next TTS model is tried; cached silent narration files regenerate; non-PCM TTS formats are decoded with ffmpeg; `assemble` refuses to write a silent voice track or film; `python run.py check-audio` shows where the audio is lost.
+- **Evidence:** `python run.py check-audio` output; `pipeline/providers.py::gemini_tts`.
+
+### F08: TODO(you), the next real failure from your run
 - **What broke:**
 - **Tried:**
 - **Fix / workaround:**

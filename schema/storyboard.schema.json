@@ -170,6 +170,11 @@
           },
           "ref_seed": {
             "type": "integer"
+          },
+          "short": {
+            "type": "string",
+            "minLength": 20,
+            "description": "Compact appearance used inside shot prompts (the full description is used for the reference portrait)"
           }
         }
       }

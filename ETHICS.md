@@ -4,7 +4,7 @@
 
 **No real person's face, likeness or voice appears in this film.**
 
-- **Etenesh and Liya are fictional.** The storyboard sets `characters[].real_person = false`. Their appearance is described in neutral, generic terms, and no photo of a real person was used as a reference.
+- **Etenesh and Liya are fictional.** The storyboard sets `characters[].real_person = false`. Their appearance is written as a fictional composite of typical Ethiopian Habesha features and dress (so the film represents its community accurately rather than generically), and no photo of a real person was used as a reference.
 - **The narrator's voice is a stock Gemini TTS voice** ("Kore"). It is not cloned from anyone; the storyboard enforces `voice.cloned: false`.
 - **The story** is a composite inspired by the common Ethiopian coffee ceremony, not one family's private history. TODO(you): if it is inspired by your own grandmother, say so here, and say that no private details were sent to any API.
 - **The pipeline enforces consent in code.** If a character is ever marked `real_person: true`, `python run.py validate` refuses to run until this file contains a line `CONSENT:<character_id>` with the record below.

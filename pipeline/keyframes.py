@@ -14,27 +14,36 @@ from .common import CallFailed, cache_key, cached, file_hash, link_current, load
 from .providers import cf_image_with_fallback
 
 STAGE = "keyframes"
+MAX_PROMPT = 2048  # Workers AI FLUX prompt limit
 SIZE = 1024  # square, subject centred: both 16:9 and 9:16 are cropped from it
 
 
+REF_STYLE = ("realistic portrait photograph, 85mm lens, soft even daylight, true-to-life brown skin tones with "
+             "natural skin texture, sharp focus on the face, no text, no letters, no watermark")
+
+
 def ref_prompt(sb: dict, ch: dict) -> str:
-    # The face is what the shots copy from this sheet, so it leads the prompt, and the
-    # portrait comes first (the shots inherit the ethnicity and features from here).
-    return (f"character reference sheet, authentic Ethiopian Habesha appearance. {ch['description']}. "
-            f"Left: detailed head-and-shoulders portrait, face clearly visible; right: full body standing "
-            f"front view. Plain warm cream background, even soft light, {sb['style']['block']}")
+    # One clear waist-up portrait, not a two-panel sheet: the shots copy identity from this image,
+    # and a two-panel sheet used as a reference tends to make the shots come out as two panels.
+    return (f"Character reference portrait of a fictional person, authentic Ethiopian Habesha appearance. "
+            f"{ch['description']}. Waist-up, facing the camera at a slight three-quarter angle, the whole face and "
+            f"head covering clearly visible, hands relaxed, plain warm cream background. {REF_STYLE}")
 
 
 def shot_prompt(sb: dict, shot: dict) -> str:
     chars = {c["id"]: c for c in sb["characters"]}
-    who = "; ".join(chars[c]["description"] for c in shot["characters"])
+    who = " ".join(f"{chars[c].get('short') or chars[c]['description']}." for c in shot["characters"])
     parts = [shot["image_prompt"]]
     if who:
-        parts.append(f"Characters: {who}")
+        parts.append(f"Characters (match the reference images exactly): {who}")
     parts.append(sb["style"]["block"])
+    prompt = " ".join(p.strip().rstrip(".") + "." for p in parts)
+    if len(prompt) > MAX_PROMPT:
+        raise SystemExit(f"[keyframes] {shot['id']}: prompt is {len(prompt)} chars; Cloudflare's limit is "
+                         f"{MAX_PROMPT}. Shorten image_prompt or the character 'short' text.")
     # No "Avoid: <negative>" here: FLUX has no negative prompt, so those words (deformed hands,
     # extra fingers...) went into the *positive* prompt. style.negative is still used by Wan.
-    return ". ".join(parts)
+    return prompt
 
 
 def refs(sb: dict, regenerate: set[str] | None = None) -> list[str]:

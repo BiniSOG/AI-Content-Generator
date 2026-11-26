@@ -7,7 +7,7 @@
   python run.py status               # what is cached / what would regenerate
 
 Stages: validate, smoke, models, script, narration, keyframes [--ref-only], ref-candidates [--only liya], shots, music, assemble,
-        experiments [--only e01], costs, kaggle-pack
+        experiments [--only e01], costs, kaggle-pack, check-audio
 Every stage reads storyboard.json; each output is cached by a hash of its inputs, so a re-run
 only regenerates what changed. Every model call is logged to runs.jsonl."""
 from __future__ import annotations
@@ -50,6 +50,9 @@ def main() -> None:
         return experiments.run(only)
     if c == "kaggle-pack":
         return kaggle_pack()
+    if c == "check-audio":
+        from pipeline import assemble
+        return assemble.check_audio()
     if c == "status":
         return status()
 

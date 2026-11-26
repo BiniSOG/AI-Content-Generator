@@ -280,6 +280,24 @@ def ffmpeg_capture(args: list[str]) -> str:
     return p.stderr
 
 
+SILENCE_DB = -45.0  # a file whose loudest sample is below this is treated as silent
+
+
+def audio_stats(path: Path) -> tuple[float, float]:
+    """(duration_s, max_volume_db) of the audio in a file; max is -inf if there is no audio."""
+    err = ffmpeg_capture(["-i", str(path), "-vn", "-af", "volumedetect", "-f", "null", "-"])
+    m = re.search(r"max_volume:\s*(-?[\d.]+|-inf) dB", err)
+    d = re.search(r"Duration:\s*(\d+):(\d+):([\d.]+)", err)
+    dur = int(d.group(1)) * 3600 + int(d.group(2)) * 60 + float(d.group(3)) if d else 0.0
+    mx = float(m.group(1)) if m and m.group(1) != "-inf" else float("-inf")
+    return dur, mx
+
+
+def is_silent(path: Path, min_s: float = 0.5) -> bool:
+    dur, mx = audio_stats(path)
+    return dur < min_s or mx < SILENCE_DB
+
+
 def duration_of(path: Path) -> float:
     p = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration",
                         "-of", "default=nw=1:nk=1", str(path)], capture_output=True, text=True)
