@@ -9,7 +9,7 @@ import re
 import wave
 from pathlib import Path
 
-from .common import CallFailed, http_call, need_env, say
+from .common import CallFailed, http_call, is_daily_quota, need_env, say
 
 GEMINI = "https://generativelanguage.googleapis.com/v1beta"
 
@@ -43,7 +43,7 @@ class QuotaExhausted(CallFailed):
 def _quota_info(e: CallFailed) -> tuple[bool, float | None]:
     """(daily_quota_used_up, retry_after_s) from a Gemini 429 body."""
     body = getattr(e, "body", "") or ""
-    daily = "PerDay" in body or "per day" in body.lower()
+    daily = is_daily_quota(body)
     m = re.search(r'"retryDelay":\s*"(\d+(?:\.\d+)?)s"', body)
     return daily, (float(m.group(1)) if m else None)
 
@@ -268,7 +268,8 @@ def _write_tts_audio(data: dict, out_wav: Path) -> None:
 
 
 # ---------------------------------------------------------------- Cloudflare FLUX
-FLAGGED_SEED_STEPS = (0, 1000, 2000)  # deterministic alternate seeds tried when an output is flagged
+FLAGGED_SEED_STEPS = (0, 300, 600)  # deterministic alternate seeds tried when an output is flagged
+SEED_USED: dict[str, int] = {}       # output path -> seed that really produced it (after flag retries)
 
 
 def cf_image(prompt: str, *, model: str, seed: int, out_png: Path, **kw) -> Path:
@@ -281,10 +282,15 @@ def cf_image(prompt: str, *, model: str, seed: int, out_png: Path, **kw) -> Path
         try:
             out = _cf_image_once(prompt, model=model, seed=seed + step, requested_seed=seed,
                                  out_png=out_png, **kw)
+            SEED_USED[str(out_png)] = seed + step
             if step:
                 say(kw.get("stage", "keyframes"), f"output was flagged at seed {seed}; used seed {seed + step}")
             return out
         except CallFailed as e:
+            if e.status == 429 and is_daily_quota(getattr(e, "body", "") or str(e)):
+                raise QuotaExhausted("the daily free Cloudflare Workers AI allowance (10,000 neurons) is used up. "
+                                     "Everything generated so far is cached; run the same command again after "
+                                     "00:00 UTC, when it resets, or upgrade to Workers Paid.") from e
             if "3030" not in str(e) or "flux-2" not in model:  # schnell ignores seed: nothing to vary
                 raise
             last = e
@@ -342,6 +348,8 @@ def cf_image_with_fallback(prompt: str, *, sb: dict, **kw) -> tuple[Path, str]:
     alt = sb["models"].get("image_alt")
     try:
         return cf_image(prompt, model=primary, **kw), primary
+    except QuotaExhausted:
+        raise  # the fallback model draws on the same daily allowance
     except CallFailed as e:
         if not alt:
             raise

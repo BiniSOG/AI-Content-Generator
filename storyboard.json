@@ -64,7 +64,9 @@
   "voice": {
     "name": "Charon",
     "style": "Tell this like a wise Ethiopian elder telling a story to his family: slow, warm and dignified, with quiet emotion; the father's words softer and a little frail, full of love.",
-    "cloned": false
+    "cloned": false,
+    "tempo": 1.12,
+    "max_pause_s": 0.45
   },
   "shots": [
     {

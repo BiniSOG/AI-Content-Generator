@@ -72,7 +72,12 @@ The format is **what broke → what I tried → what fixed it or how I worked ar
 - **Fix:** the check accepts the code, the English name or the Amharic name (am / amh / Amharic / አማርኛ), and only rejects when another language is actually named or other words were heard. A doubted recording is kept as a backup and used if no other TTS model can answer. A 429 whose body names a per-day quota marks that model as exhausted for the run (no retry rounds); a per-minute 429 waits for Gemini's `retryDelay`. When every model's daily quota is gone, narration stops right away, lists the missing shots, and says that the same command continues from the cache after the reset. `voice.check_language: false` turns the check off to save text-model quota.
 - **Evidence:** the narration log of 2026-11-26.
 
-### F11: TODO(you), the next real failure from your run
+### F11: narration 114 s long; Cloudflare daily allowance spent on count retries
+- **What broke:** (1) The ten Amharic lines came to 113.7 s of narration, so the film would run far past 90 s (slow "elder" delivery, plus silence at the start and end of every TTS clip). (2) The people-count retries (s03: 4 extra images, s04: 3) used up Cloudflare's free 10,000 neurons a day; the pipeline then retried the 429 three times with backoff and fell back to FLUX.1 schnell, which draws on the same allowance. (3) When a content-filter retry changed the seed (3034 -> 4034), the count check still logged and recorded 3034, because the two retry sequences used the same +1000 steps.
+- **Fix:** (1) Each TTS file is tightened by FFmpeg: edge silence trimmed, pauses longer than `voice.max_pause_s` (0.45 s) shortened, then `voice.tempo` (1.12) with pitch kept. This is derived from the cached raw file, so changing either value costs no API call. Narration prints each line's length and warns above 80 s. (2) A 429 that names a daily allowance (Gemini PerDay, Cloudflare "daily free allocation") is never retried and never falls back; keyframes stops the run with a clear message, and `film` no longer continues to a film with missing pictures. The count retries were cut from 3 to 2 extra seeds. (3) The content-filter retries use +300 and +600; the seed that really produced each image is recorded.
+- **Evidence:** the run log of 2026-11-26 20:04 UTC.
+
+### F12: TODO(you), the next real failure from your run
 - **What broke:**
 - **Tried:**
 - **Fix / workaround:**

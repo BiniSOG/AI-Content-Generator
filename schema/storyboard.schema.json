@@ -215,6 +215,18 @@
         "check_language": {
           "type": "boolean",
           "description": "Let Gemini listen to every narration line and reject non-narration-language speech (one extra text-model call per line)"
+        },
+        "tempo": {
+          "type": "number",
+          "minimum": 0.8,
+          "maximum": 1.5,
+          "description": "Speed-up applied to every narration line, pitch kept (no API call)"
+        },
+        "max_pause_s": {
+          "type": "number",
+          "minimum": 0.2,
+          "maximum": 2,
+          "description": "Pauses longer than this inside a line are shortened to it"
         }
       }
     },

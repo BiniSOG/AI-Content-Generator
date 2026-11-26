@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 
 from .common import CallFailed, cache_key, cached, file_hash, link_current, load_storyboard, out_dir, say
-from .providers import cf_image_with_fallback, gemini_inspect
+from .providers import SEED_USED, QuotaExhausted, cf_image_with_fallback, gemini_inspect
 
 STAGE = "keyframes"
 MAX_PROMPT = 2048  # Workers AI FLUX prompt limit
@@ -58,15 +58,18 @@ def refs(sb: dict, regenerate: set[str] | None = None) -> list[str]:
         target = d / f"{ch['id']}-{key}.png"
         if not cached(target) or (regenerate and ch["id"] in regenerate):
             say(STAGE, f"reference sheet for {ch['id']} (seed {seed})")
-            generate_checked(sb, prompt, seed, target, ch.get("count", 1), f"ref:{ch['id']}",
-                             width=SIZE, height=SIZE, stage=STAGE, shot=f"ref:{ch['id']}", cache_key=key)
+            try:
+                generate_checked(sb, prompt, seed, target, ch.get("count", 1), f"ref:{ch['id']}",
+                                 width=SIZE, height=SIZE, stage=STAGE, shot=f"ref:{ch['id']}", cache_key=key)
+            except QuotaExhausted as e:
+                raise SystemExit(f"[keyframes] stopped at the reference for {ch['id']}: {e}")
             changed.append(ch["id"])
         link_current(target, d / f"{ch['id']}.png")
     say(STAGE, f"references: {len(changed)} generated, look at outputs/refs/*.png")
     return changed
 
 
-COUNT_RETRY_STEPS = (1000, 2000, 3000)  # fixed alternate seeds, so results stay reproducible
+COUNT_RETRY_STEPS = (1000, 2000)  # fixed alternate seeds; each try costs a FLUX image from the daily allowance
 
 
 def count_people(sb: dict, png: Path, shot: str) -> int | None:
@@ -86,6 +89,7 @@ def generate_checked(sb: dict, prompt: str, seed: int, target: Path, want: int |
     """Generate an image; if `want` people are expected and Gemini counts a different number, try the
     next fixed seeds and keep the first image with the right count. Returns (model_used, seed_used)."""
     _, used = cf_image_with_fallback(prompt, sb=sb, seed=seed, out_png=target, **kw)
+    seed = SEED_USED.get(str(target), seed)  # a content-filter retry may have changed it
     if want is None:
         return used, seed
     n = count_people(sb, target, label)
@@ -97,11 +101,12 @@ def generate_checked(sb: dict, prompt: str, seed: int, target: Path, want: int |
         say(STAGE, f"{label}: counted {n} people, expected {want}; trying seed {seed + step}")
         alt = target.with_name(target.stem + f"-alt{step}.png")
         _, used2 = cf_image_with_fallback(prompt, sb=sb, seed=seed + step, out_png=alt, **kw)
+        real = SEED_USED.get(str(alt), seed + step)
         n = count_people(sb, alt, label)
         if n == want:
             alt.replace(target)
-            say(STAGE, f"{label}: seed {seed + step} has {want} people; using it")
-            return used2, seed + step
+            say(STAGE, f"{label}: seed {real} has {want} people; using it")
+            return used2, real
         alt.unlink(missing_ok=True)
     say(STAGE, f"{label}: WARNING no seed gave {want} people; kept seed {seed}. Look at it, change the seed "
                f"in storyboard.json or simplify the prompt")
@@ -126,6 +131,8 @@ def ref_candidates(sb: dict, only: set[str] | None = None, n: int = 4) -> None:
             try:
                 cf_image_with_fallback(prompt, sb=sb, seed=seed, out_png=target, width=SIZE, height=SIZE,
                                        stage=STAGE, shot=f"refcand:{ch['id']}")
+            except QuotaExhausted as e:
+                raise SystemExit(f"[keyframes] stopped: {e}")
                 want = ch.get("count", 1)
                 if want > 1:
                     n = count_people(sb, target, f"refcand:{ch['id']}")
@@ -164,6 +171,10 @@ def run(sb: dict | None = None, only: set[str] | None = None, ref_only: bool = F
                                                    shot=s["id"], cache_key=key)
                 meta[s["id"]] = {"file": target.name, "key": key, "model": used, "seed": seed_used}
                 changed.append(s["id"])
+            except QuotaExhausted as e:
+                meta_path.write_text(json.dumps(meta, indent=2))
+                raise SystemExit(f"[keyframes] stopped at {s['id']}: {e}\nDone so far: "
+                                 f"{', '.join(changed) or 'none new'} (kept in the cache).")
             except CallFailed as e:
                 say(STAGE, f"{s['id']}: FAILED after retries: {str(e)[:200]}")
                 failed.append(s["id"])
@@ -176,4 +187,7 @@ def run(sb: dict | None = None, only: set[str] | None = None, ref_only: bool = F
     meta_path.write_text(json.dumps(meta, indent=2))
     say(STAGE, f"{len(changed)} regenerated" + (f": {', '.join(changed)}" if changed else " (all cached)")
         + (f"; FAILED: {', '.join(failed)} (rerun later, cache keeps the rest)" if failed else ""))
+    if failed:
+        raise SystemExit(f"[keyframes] {', '.join(failed)} failed; not continuing to a film with missing "
+                         f"pictures. Run the same command again (finished shots are cached).")
     return changed

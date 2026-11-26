@@ -210,6 +210,12 @@ def log_call(*, stage: str, provider: str, model: str, params: dict, seed, laten
 
 
 # ---------------------------------------------------------------- HTTP with retries
+def is_daily_quota(text: str) -> bool:
+    """A 429 that means "the daily allowance is used up" (Gemini PerDay quota, Cloudflare daily neurons)."""
+    t = text or ""
+    return "PerDay" in t or "daily free allocation" in t or "per day" in t.lower()
+
+
 class CallFailed(Exception):
     def __init__(self, msg: str, status: int | None = None, body: str = ""):
         super().__init__(msg)
@@ -242,7 +248,7 @@ def http_call(method: str, url: str, *, log: dict, max_attempts: int = 4, timeou
             last_body = r.text[:4000] if r.status_code >= 400 else ""
             if r.status_code == 429 or r.status_code >= 500:
                 last_err = _short_error(r)
-                if is_last:
+                if is_last or (r.status_code == 429 and is_daily_quota(r.text)):
                     break
                 wait = min(60, 2 ** attempt * 2)
                 ra = r.headers.get("Retry-After")

@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import json
 
-from .common import audio_stats, cache_key, cached, duration_of, is_silent, link_current, load_storyboard, out_dir, say
+from .common import (audio_stats, cache_key, cached, duration_of, ffmpeg, is_silent, link_current, load_storyboard,
+                     out_dir, say)
 from .providers import QuotaExhausted, gemini_inspect, gemini_tts
 from .common import CallFailed
 
@@ -28,6 +29,8 @@ def run(sb: dict | None = None, only: set[str] | None = None) -> list[str]:
     manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
     changed = []
     check_on = sb.get("voice", {}).get("check_language", True)
+    tempo = float(sb.get("voice", {}).get("tempo", 1.0))
+    max_pause = float(sb.get("voice", {}).get("max_pause_s", 0.45))
     missing = []
     for s in sb["shots"]:
         text = s["narration"]["en"] if lang == "en" else s["narration"]["spoken"]
@@ -49,8 +52,11 @@ def run(sb: dict | None = None, only: set[str] | None = None) -> list[str]:
                 say(STAGE, f"{s['id']}: not generated: {str(e)[:160]}")
                 continue
         if cached(target):
-            link_current(target, d / f"{s['id']}.wav")
-            manifest[s["id"]] = {"file": target.name, "key": key, "duration_s": round(duration_of(target), 3)}
+            final = tighten(target, tempo, max_pause)
+            link_current(final, d / f"{s['id']}.wav")
+            manifest[s["id"]] = {"file": final.name, "raw": target.name, "key": key,
+                                 "duration_s": round(duration_of(final), 3),
+                                 "raw_duration_s": round(duration_of(target), 3)}
     manifest_path.write_text(json.dumps(manifest, indent=2))
     if missing:
         raise SystemExit(f"[narration] {len(changed)} line(s) made this run; still missing: {', '.join(missing)}.\n"
@@ -59,8 +65,29 @@ def run(sb: dict | None = None, only: set[str] | None = None) -> list[str]:
                          f"time), or right away if you enable billing for the API key in Google AI Studio.")
     total = sum(v["duration_s"] for k, v in manifest.items() if any(s["id"] == k for s in sb["shots"]))
     say(STAGE, f"{len(changed)} regenerated" + (f": {', '.join(changed)}" if changed else " (all cached)")
-        + f"; total narration {total:.1f}s")
+        + f"; total narration {total:.1f}s (tempo {tempo:g}, pauses up to {max_pause:g}s)")
+    say(STAGE, "per line: " + ", ".join(f"{k} {v['duration_s']:.1f}s" for k, v in manifest.items()
+                                        if any(s['id'] == k for s in sb['shots'])))
+    if total > 80:
+        say(STAGE, f"WARNING: {total:.0f}s of narration makes the film longer than 90 s. Raise voice.tempo "
+                   f"(e.g. 1.2) or lower voice.max_pause_s in storyboard.json; that costs no API calls.")
     return changed
+
+
+def tighten(raw, tempo: float, max_pause: float):
+    """Trim silence at both ends, shorten pauses longer than max_pause, and speed up by `tempo`
+    (pitch kept). Derived from the cached TTS file, so changing these costs no API call."""
+    out = raw.with_name(f"{raw.stem}-t{tempo:g}-p{max_pause:g}.wav")
+    if cached(out):
+        return out
+    af = ("silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.05,areverse,"
+          "silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.1,areverse,"
+          f"silenceremove=stop_periods=-1:stop_duration={max_pause + 0.25:g}:stop_threshold=-45dB:"
+          f"stop_silence={max_pause:g}")
+    if abs(tempo - 1.0) > 1e-3:
+        af += f",atempo={tempo:g}"
+    ffmpeg(["-i", str(raw), "-af", af, str(out)])
+    return out
 
 
 def _language_check(sb: dict, sid: str, text: str, lang_name: str):
