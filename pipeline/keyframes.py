@@ -34,7 +34,8 @@ def ref_prompt(sb: dict, ch: dict) -> str:
 def shot_prompt(sb: dict, shot: dict) -> str:
     chars = {c["id"]: c for c in sb["characters"]}
     who = " ".join(f"{chars[c].get('short') or chars[c]['description']}." for c in shot["characters"])
-    parts = [shot["image_prompt"]]
+    setting = sb["style"].get("setting")
+    parts = ([setting] if setting else []) + [shot["image_prompt"]]
     if who:
         parts.append(f"Characters (match the reference images exactly): {who}")
     parts.append(sb["style"]["block"])

@@ -51,7 +51,12 @@ The format is **what broke → what I tried → what fixed it or how I worked ar
   3. Audio is now checked at every step: TTS output that is silent or too short for its text counts as a failure and the next TTS model is tried; cached silent narration files regenerate; non-PCM TTS formats are decoded with ffmpeg; `assemble` refuses to write a silent voice track or film; `python run.py check-audio` shows where the audio is lost.
 - **Evidence:** `python run.py check-audio` output; `pipeline/providers.py::gemini_tts`.
 
-### F08: TODO(you), the next real failure from your run
+### F08: Amharic on screen needs an Ethiopic font
+- **What broke:** switching the subtitles to Amharic + English would have drawn every Ge'ez letter as an empty box: the subtitle font, DejaVu Sans, has no Ethiopic glyphs. The first version of the bilingual subtitles also cut long Amharic sentences after two lines.
+- **Fix:** `subtitles.subtitle_font` picks a font with Ethiopic letters (Nyala on Windows, Kefa on macOS, Noto Sans Ethiopic or Abyssinica SIL on Linux via `fc-list :lang=am`) and stops with an install hint if there is none. Long Amharic sentences are split at ፣ ፤ ፦ into several cues, and the English is paired with them sentence by sentence (split by length when the counts differ); no text is ever dropped.
+- **Evidence:** frames from the offline test with Abyssinica SIL, 16:9 and 9:16.
+
+### F09: TODO(you), the next real failure from your run
 - **What broke:**
 - **Tried:**
 - **Fix / workaround:**

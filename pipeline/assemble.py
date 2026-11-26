@@ -124,8 +124,9 @@ def export(sb: dict, tag: str, w: int, h: int, mix: Path, srt: Path, total: floa
     lst.write_text("".join(f"file '{c.resolve().as_posix()}'\n" for c in clips + [card]))
     # subtitles: libass sizes are relative to a 288-line script; vertical needs a higher margin (safe area)
     vertical = h > w
-    style = ("FontName=DejaVu Sans,FontSize=9,MarginV=70,MarginL=20,MarginR=20" if vertical
-             else "FontName=DejaVu Sans,FontSize=17,MarginV=22")
+    font = subtitles.subtitle_font(sb["language"].get("subtitles", "en"))
+    style = (f"FontName={font},FontSize=9,MarginV=70,MarginL=20,MarginR=20" if vertical
+             else f"FontName={font},FontSize=17,MarginV=22")
     style += ",PrimaryColour=&H00F0F4F8,OutlineColour=&H80000000,BorderStyle=1,Outline=1.4,Shadow=0"
     # run ffmpeg from the srt's folder so the filter path has no drive letter / colon (Windows-safe)
     import subprocess
@@ -170,7 +171,7 @@ def run(sb: dict | None = None, only=None) -> list[str]:
         raise SystemExit("[assemble] the voice track is SILENT. Run: python run.py check-audio")
     mix = build_mix(sb, voice, total, d / "mix.wav")
     vd = narration.durations()
-    srt = subtitles.build_srt(sb, starts, vd, d / "subtitles_en.srt")
+    srt = subtitles.build_srt(sb, starts, vd, d / "subtitles.srt")
     for tag, ((w, h), path) in outs.items():
         export(sb, tag, w, h, mix, srt, total, path)
         if is_silent(path):
@@ -195,13 +196,14 @@ def radio_cut(sb: dict | None = None) -> Path:
     starts, total = timeline(sb)
     voice = build_voice(sb, starts, total, d / "voice.wav")
     mix = build_mix(sb, voice, total, d / "radio_cut.wav")
-    srt = subtitles.build_srt(sb, starts, narration.durations(), d / "subtitles_en.srt")
+    srt = subtitles.build_srt(sb, starts, narration.durations(), d / "subtitles.srt")
+    font = subtitles.subtitle_font(sb["language"].get("subtitles", "en"))
     ffmpeg(["-i", str(mix), "-c:a", "libmp3lame", "-q:a", "3", str(d / "radio_cut.mp3")])
     import subprocess
     out = d / "radio_cut.mp4"
     cmd = ["ffmpeg", "-y", "-hide_banner", "-loglevel", "error", "-f", "lavfi", "-i",
            f"color=c=black:s=1280x720:r=24:d={total:.3f}", "-i", str(mix.resolve()),
-           "-vf", "subtitles=subtitles_en.srt:force_style='FontSize=18,MarginV=30'",
+           "-vf", f"subtitles=subtitles.srt:force_style='FontName={font},FontSize=18,MarginV=30'",
            "-shortest", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k",
            str(out.resolve())]
     p = subprocess.run(cmd, cwd=d, capture_output=True, text=True)

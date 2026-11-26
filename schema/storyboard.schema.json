@@ -66,8 +66,12 @@
           "type": "string"
         },
         "subtitles": {
-          "type": "string",
-          "const": "en"
+          "enum": [
+            "en",
+            "am",
+            "am+en"
+          ],
+          "description": "en = English only; am = the narration language only; am+en = narration language on top, English below"
         }
       }
     },
@@ -137,6 +141,11 @@
             "null"
           ],
           "description": "Path of the approved reference image, or null until chosen"
+        },
+        "setting": {
+          "type": "string",
+          "minLength": 20,
+          "description": "Place and people line put FIRST in every shot prompt (image models weight the start of a prompt most)"
         }
       }
     },

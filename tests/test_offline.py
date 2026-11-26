@@ -57,7 +57,7 @@ def full_run():
 
 
 full_run()
-for f in ("film_16x9.mp4", "film_9x16.mp4", "subtitles_en.srt"):
+for f in ("film_16x9.mp4", "film_9x16.mp4", "subtitles.srt"):
     assert (tmp / "outputs/final" / f).exists(), f
 dur = common.duration_of(tmp / "outputs/final/film_16x9.mp4")
 print(f"film length {dur:.1f}s")
