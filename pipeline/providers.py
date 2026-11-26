@@ -28,13 +28,22 @@ def _fallbacks(model: str) -> list[str]:
     return [model]
 
 
+# model -> time until which it is considered busy (503 / 429 / timeout). Shared by every call in
+# this process, so a run of 9 lines doesn't re-try the same overloaded models 9 times.
+_BUSY_UNTIL: dict[str, float] = {}
+BUSY_COOLDOWN_S = 180
+
+
 def _gemini_post(model: str, body: dict, *, log: dict, timeout: int, rounds: int = 4):
     """POST to the first model in the fallback chain that answers.
 
-    A 503 means *that model* is overloaded, so instead of burning several backoff retries on
-    one model we try each model in the chain once per round, and only wait (5, 15, 30 s) after
-    a whole round failed. Models that answer with a non-retryable 4xx (bad model ID, bad request
-    for that model) are dropped from the chain. Returns (response, model_used)."""
+    - A 503 means *that model* is overloaded, so each model is tried once per round and the
+      pipeline only waits (5, 15, 30 s) after a whole round failed.
+    - A model that was busy in the last BUSY_COOLDOWN_S seconds is tried *after* the others,
+      so once a fallback works, the following calls go straight to it. The primary is tried
+      first again when its cooldown ends.
+    - Early rounds use a shorter timeout (half), so a hanging model costs 45 s, not 90 s.
+    - Models answering a non-retryable 4xx are dropped. Returns (response, model_used)."""
     import time
     key = need_env("GEMINI_API_KEY")
     chain = _fallbacks(model)
@@ -43,12 +52,19 @@ def _gemini_post(model: str, body: dict, *, log: dict, timeout: int, rounds: int
     last = None
     errors: dict[str, str] = {}
     for rnd in range(rounds):
-        for m in list(chain):
+        now = time.time()
+        busy = [m for m in chain if _BUSY_UNTIL.get(m, 0) > now]
+        order = [m for m in chain if m not in busy] + busy
+        if busy and rnd == 0 and len(busy) < len(chain):
+            say(stage, f"skipping recently busy model(s) for now: {', '.join(busy)}")
+        t_out = timeout if rnd == rounds - 1 else max(30, timeout // 2)
+        for m in order:
             try:
                 r = http_call("POST", f"{GEMINI}/models/{m}:generateContent",
                               headers={"x-goog-api-key": key, "Content-Type": "application/json"},
-                              json=body, timeout=timeout, max_attempts=1,
+                              json=body, timeout=t_out, max_attempts=1,
                               log={**log, "model": m, "extra": {"requested_model": model, "round": rnd + 1}})
+                _BUSY_UNTIL.pop(m, None)
                 if m != model:
                     say(stage, f"used fallback model {m} (requested {model})")
                 return r, m
@@ -56,7 +72,9 @@ def _gemini_post(model: str, body: dict, *, log: dict, timeout: int, rounds: int
                 last = e
                 errors[m] = str(e)[:160]
                 retryable = e.status is None or e.status == 429 or e.status >= 500
-                if not retryable:
+                if retryable:
+                    _BUSY_UNTIL[m] = time.time() + BUSY_COOLDOWN_S
+                else:
                     chain.remove(m)
                 say(stage, f"{m} unavailable ({str(e)[:90]})" + ("" if retryable else "; dropping it"))
         if not chain:

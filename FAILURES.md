@@ -37,7 +37,12 @@ The format is **what broke → what I tried → what fixed it or how I worked ar
   5. Removed `Avoid: <negative>` from FLUX prompts. FLUX has no negative prompt, so "deformed hands, extra fingers" was going into the *positive* prompt. `style.negative` is still passed to Wan.
 - **Evidence:** smoke lines in runs.jsonl with code 3030; `pipeline/providers.py::cf_image`, `pipeline/common.py::image_filter_risks`, `pipeline/smoke.py::_diagnose_flag`.
 
-### F06: TODO(you), the next real failure from your run
+### F06: characters didn't look Ethiopian; script stage slowed by busy models
+- **What broke:** (1) The reference sheets drew generic faces, not Ethiopian ones. The descriptions said only "Ethiopian" (and the F05 rewording had dropped it from Liya's), and the pale ochre/cream palette washed out skin tones. (2) `film` re-tried all five overloaded Gemini models for *every* narration line, including 90-second ReadTimeouts: about 6 minutes for one line.
+- **Fix:** (1) The character descriptions now name Habesha features (rich brown skin, oval face, high cheekbones, slim nose, almond-shaped eyes, curled grey hair, shuruba braids) and clothing (habesha kemis, tibeb border). The style block says "rich natural brown skin tones". The ref prompt leads with "authentic Ethiopian Habesha appearance" and puts the face portrait first. `python run.py ref-candidates` renders 4 seeds per character, so a human can pick the best face and set `ref_seed`. (2) `_gemini_post` remembers models that were busy in the last 3 minutes and tries the others first, so after the first line finds a working fallback, the next lines go straight to it. Early rounds also use half the timeout.
+- **Evidence:** outputs/refs/candidates/*.png; the `round` and `requested_model` fields in runs.jsonl.
+
+### F07: TODO(you), the next real failure from your run
 - **What broke:**
 - **Tried:**
 - **Fix / workaround:**

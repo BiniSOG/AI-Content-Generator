@@ -19,7 +19,7 @@
     "music": "ACE-Step-1.5"
   },
   "style": {
-    "block": "hand-painted gouache illustration, warm earthy palette of ochre, terracotta, cream and deep green, soft golden morning light, visible paper grain, gentle brush texture, warm homely family atmosphere, nostalgic, subject centred in frame, no text, no letters",
+    "block": "hand-painted gouache illustration, warm earthy palette of ochre, terracotta, cream and deep green, rich natural brown skin tones, soft golden morning light, visible paper grain, gentle brush texture, warm homely family atmosphere, nostalgic, subject centred in frame, no text, no letters",
     "negative": "photorealistic, 3d render, text, watermark, extra fingers, deformed hands, harsh contrast, neon",
     "golden_ref": null
   },
@@ -27,14 +27,14 @@
     {
       "id": "etenesh",
       "name": "Etenesh (grandmother)",
-      "description": "Etenesh, an elderly Ethiopian woman in her seventies, round kind face with deep smile lines, short grey hair under a white cotton netela shawl with a thin green-yellow-red woven border, long white habesha dress, small silver cross pendant",
+      "description": "Etenesh, an elderly Ethiopian Habesha woman from the Amhara highlands in her seventies, rich warm brown skin, typical Ethiopian facial features: oval face, high cheekbones, slim straight nose, large dark almond-shaped eyes, kind face with deep smile lines, short grey tightly curled hair partly covered by a white cotton netela shawl with a thin green-yellow-red woven tibeb border, long white habesha kemis dress, small silver Ethiopian Orthodox cross pendant",
       "real_person": false,
       "ref_seed": 1101
     },
     {
       "id": "liya",
       "name": "Liya (granddaughter, age 10)",
-      "description": "Liya, Etenesh's ten-year-old granddaughter, braided hair tied back, round face, big curious eyes, mustard-yellow cardigan over a simple white dress",
+      "description": "Liya, Etenesh's ten-year-old granddaughter, an Ethiopian Habesha girl, warm brown skin, typical Ethiopian facial features: oval face, high cheekbones, slim nose, big curious dark almond-shaped eyes, black hair in neat shuruba cornrow braids tied back, mustard-yellow cardigan over a simple white habesha dress with a small tibeb border",
       "real_person": false,
       "ref_seed": 2202
     }

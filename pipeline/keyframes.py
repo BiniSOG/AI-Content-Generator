@@ -18,9 +18,11 @@ SIZE = 1024  # square, subject centred: both 16:9 and 9:16 are cropped from it
 
 
 def ref_prompt(sb: dict, ch: dict) -> str:
-    return (f"character reference sheet of {ch['description']}, full body standing front view and a "
-            f"head-and-shoulders portrait side by side, plain warm cream background, even soft light, "
-            f"{sb['style']['block']}")
+    # The face is what the shots copy from this sheet, so it leads the prompt, and the
+    # portrait comes first (the shots inherit the ethnicity and features from here).
+    return (f"character reference sheet, authentic Ethiopian Habesha appearance. {ch['description']}. "
+            f"Left: detailed head-and-shoulders portrait, face clearly visible; right: full body standing "
+            f"front view. Plain warm cream background, even soft light, {sb['style']['block']}")
 
 
 def shot_prompt(sb: dict, shot: dict) -> str:
@@ -51,6 +53,30 @@ def refs(sb: dict, regenerate: set[str] | None = None) -> list[str]:
         link_current(target, d / f"{ch['id']}.png")
     say(STAGE, f"references: {len(changed)} generated, look at outputs/refs/*.png")
     return changed
+
+
+def ref_candidates(sb: dict, only: set[str] | None = None, n: int = 4) -> None:
+    """Render n reference sheets per character at different seeds, so you can pick the face
+    that looks right and put its seed in characters[].ref_seed."""
+    d = out_dir("refs") / "candidates"
+    for ch in sb["characters"]:
+        if only and ch["id"] not in only:
+            continue
+        prompt = ref_prompt(sb, ch)
+        base = ch.get("ref_seed", 1)
+        for i in range(n):
+            seed = base + i * 111
+            target = d / f"{ch['id']}-seed{seed}.png"
+            if cached(target):
+                continue
+            say(STAGE, f"candidate {ch['id']} seed {seed}")
+            try:
+                cf_image_with_fallback(prompt, sb=sb, seed=seed, out_png=target, width=SIZE, height=SIZE,
+                                       stage=STAGE, shot=f"refcand:{ch['id']}")
+            except Exception as e:
+                say(STAGE, f"  failed: {str(e)[:120]}")
+    say(STAGE, f"look at {d}/ ; put the seed you like in storyboard.json characters[].ref_seed, "
+               "then: python run.py keyframes --ref-only")
 
 
 def run(sb: dict | None = None, only: set[str] | None = None, ref_only: bool = False) -> list[str]:
