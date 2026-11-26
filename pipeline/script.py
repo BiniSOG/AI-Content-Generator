@@ -11,6 +11,7 @@ STAGE = "script"
 PROMPT = """You are translating narration for a short film into {lang}.
 Translate the line below into natural, spoken {lang} that a native speaker would say aloud.
 Keep it short and easy to speak. Keep these names as they are: {names}.
+Write it in the {lang} script (for Amharic: Ge'ez / Fidel letters), with no Latin letters at all.
 Return ONLY the translated line, with no quotes, notes or transliteration.
 
 Full script for context:
@@ -43,6 +44,15 @@ def run(sb: dict | None = None, only: set[str] | None = None) -> list[str]:
         names = ", ".join(c["name"].split(" (")[0] for c in sb["characters"])
         n["spoken"] = gemini_text(PROMPT.format(lang=lang_name, context=context, line=n["en"], names=names),
                                   model=model, stage=STAGE, shot=s["id"], cache_key=key)
+        from .narration import spoken_problems
+        if spoken_problems(s, lang):  # e.g. transliterated into Latin letters: ask once more
+            say(STAGE, f"{s['id']}: translation was not fully in {lang_name} script; asking again")
+            n["spoken"] = gemini_text(PROMPT.format(lang=lang_name, context=context, line=n["en"], names=names)
+                                      + f"\n\nIMPORTANT: answer only in {lang_name} script.",
+                                      model=model, stage=STAGE, shot=s["id"], cache_key=key)
+            if spoken_problems(s, lang):
+                raise SystemExit(f"[script] {s['id']}: could not get a {lang_name}-script line: {n['spoken'][:80]}. "
+                                 f"Write it by hand in storyboard.json and set \"locked\": true.")
         n["spoken_source_hash"] = key
         changed.append(s["id"])
         save_storyboard(sb)  # save as we go so a crash loses nothing

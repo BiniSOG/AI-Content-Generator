@@ -34,6 +34,10 @@ def main() -> None:
         print("storyboard.json is valid")
         for w in common.image_filter_risks(sb):
             print(f"  warning (image safety filter may flag this): {w}")
+        from pipeline.narration import spoken_problems
+        for s in sb["shots"]:
+            for w in spoken_problems(s, sb["language"]["narration"]):
+                print(f"  warning (voice would not be fully {sb['language'].get('narration_name')}): {w}")
         return
     if c == "smoke":
         from pipeline import smoke

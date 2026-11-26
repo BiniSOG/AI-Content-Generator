@@ -116,13 +116,29 @@ def gemini_list_models() -> list[str]:
 
 
 # ---------------------------------------------------------------- Gemini TTS
+def tts_prompt(text: str, style: str | None, lang_name: str | None) -> str:
+    """The text sent to the TTS model. The direction and the transcript are clearly separated, and the
+    model is told to speak ONLY the transcript, in its language: with the old "style + blank line + text"
+    form, TTS models sometimes read the English direction aloud before the line."""
+    if not style and not lang_name:
+        return text
+    lang = lang_name or "the transcript's language"
+    direction = (f"Read the transcript below aloud in {lang}, as a native {lang} speaker with natural "
+                 f"{lang} pronunciation and rhythm. Speak only the transcript, word for word. Do not say these "
+                 f"directions aloud and do not translate anything.")
+    if style:
+        direction += f" Delivery: {style}"
+    return f"{direction}\n\nTRANSCRIPT:\n{text}"
+
+
 def gemini_tts(text: str, *, model: str, voice: str, style: str | None, out_wav: Path,
-               stage: str = "narration", shot: str | None = None, cache_key: str | None = None) -> Path:
+               stage: str = "narration", shot: str | None = None, cache_key: str | None = None,
+               lang_name: str | None = None) -> Path:
     """Speak `text` to out_wav. A model that answers HTTP 200 but with silent or near-empty audio
     (seen when a TTS model doesn't really support the language, e.g. Amharic) counts as a failure,
     and the next model in models.tts_fallbacks is tried."""
     from .common import is_silent, audio_stats
-    spoken = f"{style}\n\n{text}" if style else text
+    spoken = tts_prompt(text, style, lang_name)
     body = {
         "contents": [{"parts": [{"text": spoken}]}],
         "generationConfig": {
@@ -136,7 +152,8 @@ def gemini_tts(text: str, *, model: str, voice: str, style: str | None, out_wav:
     while True:
         r, used = _gemini_post(model, body, timeout=180, exclude=tried,
                                log=dict(stage=stage, shot=shot, provider="gemini",
-                                        params={"voice": voice, "style": style, "chars": len(text)},
+                                        params={"voice": voice, "style": style, "chars": len(text),
+                                                "language": lang_name},
                                         seed=None, cache_key=cache_key, output=str(out_wav),
                                         units=len(text), unit="chars"))
         _write_tts_audio(r.json(), out_wav)

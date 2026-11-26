@@ -20,7 +20,7 @@ from pipeline import common, providers, narration, keyframes, script, shots, mus
 calls = []
 
 
-def fake_tts(text, *, model, voice, style, out_wav, stage="narration", shot=None, cache_key=None):
+def fake_tts(text, *, model, voice, style, out_wav, stage="narration", shot=None, cache_key=None, **kw):
     calls.append(("tts", shot))
     secs = 2.0 + len(text) / 25
     out_wav.parent.mkdir(parents=True, exist_ok=True)
@@ -42,7 +42,8 @@ def fake_img(prompt, *, sb, seed, out_png, **kw):
 
 def fake_text(prompt, **kw):
     calls.append(("text", kw.get("shot")))
-    return "AMHARIC:" + prompt.rsplit("\n", 1)[-1]
+    # fake Amharic (Ethiopic script) that still changes with the English line
+    return "ትርጉም " + "".join("ሀለሐመሠረሰቀበተ"[ord(c) % 10] for c in prompt.rsplit("\n", 1)[-1] if c.isalpha())[:40]
 
 
 narration.gemini_tts = fake_tts

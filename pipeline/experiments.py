@@ -77,7 +77,7 @@ def e04(sb, d):
 def _tts(sb, text, out, voice=None, style="__default__"):
     st = sb.get("voice", {}).get("style") if style == "__default__" else style
     gemini_tts(text, model=sb["models"]["tts"], voice=voice or sb.get("voice", {}).get("name", "Kore"),
-               style=st, out_wav=out, stage="experiment")
+               style=st, out_wav=out, stage="experiment", lang_name=sb["language"].get("narration_name"))
     return round(duration_of(out), 2)
 
 
