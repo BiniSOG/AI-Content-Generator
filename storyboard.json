@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "title": "The Smoke Still Finds Me",
-  "logline": "A woman far from home remembers how her grandmother taught her the coffee ceremony, and learns that it was never about the coffee.",
+  "title": "Slowly, the Egg Walks",
+  "logline": "In the Ethiopian highlands, a boastful rabbit challenges a slow tortoise to a race, naps halfway because he is sure he will win, and wakes to find the tortoise has already reached the finish.",
   "audience": {
-    "who": "TODO(you): e.g. young Ethiopians aged 18-30 living away from their family's home town or abroad",
-    "where": "TODO(you): e.g. on a phone, vertical, TikTok / Instagram / YouTube Shorts, sound on",
-    "feel": "TODO(you): e.g. the urge to call a grandparent today"
+    "who": "TODO(you): e.g. Amharic-speaking children aged 5-10 and their parents",
+    "where": "TODO(you): e.g. on a phone, vertical, YouTube Shorts / TikTok, sound on",
+    "feel": "TODO(you): e.g. laughing at the sleeping rabbit and cheering for the tortoise"
   },
   "language": {
     "narration": "am",
@@ -35,211 +35,254 @@
     "music": "ACE-Step-1.5"
   },
   "style": {
-    "block": "cinematic film still, realistic documentary photography, 35mm film look, natural light from the doorway and the charcoal fire, warm golden tones, gentle film grain, shallow depth of field, authentic rural Ethiopian highland home, true-to-life brown skin tones with natural skin texture, realistic hands with five fingers, main subject centred with the key action in the middle of a square frame, no text, no letters, no watermark",
-    "negative": "cartoon, anime, illustration, painting, 3d render, plastic skin, waxy face, text, watermark, extra fingers, deformed hands, floating objects, cup held sideways, harsh contrast, neon",
+    "block": "cinematic nature documentary still, photorealistic animals with natural fur and shell detail, green Ethiopian highland landscape with acacia and warka trees, warm golden light, camera low at the animals' eye level, shallow depth of field, gentle film grain, animals without clothes behaving naturally, main subject centred with the key action in the middle of a square frame, no text, no letters, no watermark",
+    "negative": "cartoon, anime, 3d render, plastic look, clothes on animals, extra legs, deformed paws, two heads, text, watermark, harsh contrast, neon",
     "golden_ref": null
   },
   "characters": [
     {
-      "id": "etenesh",
-      "name": "Etenesh (grandmother)",
-      "description": "Etenesh, a 74-year-old Ethiopian Amhara grandmother from the northern highlands: slender, warm medium-dark brown skin with fine wrinkles, long oval Habesha face, high cheekbones, slim straight nose, large dark almond-shaped eyes, gentle smile lines, a small faded blue-green cross tattoo in the centre of her forehead; grey hair in fine flat shuruba braids close to the scalp, mostly covered by a white cotton netela shawl draped over her head and shoulders with a narrow green-yellow-red tibeb border; long white cotton habesha kemis dress with tibeb embroidery down the front; a small silver Ethiopian Orthodox cross on a black cord",
+      "id": "rabbit",
+      "name": "Tinchel (the rabbit)",
       "real_person": false,
-      "ref_seed": 1101,
-      "short": "Etenesh: 74-year-old Ethiopian Amhara grandmother, warm medium-dark brown skin, long oval face, high cheekbones, slim nose, small faded cross tattoo on the forehead, grey shuruba braids under a white netela draped over her head and shoulders, white habesha kemis with green-yellow-red tibeb border"
+      "ref_seed": 3101,
+      "description": "Tinchel, a slender Ethiopian highland hare (a wild rabbit): long upright ears with black tips, sandy-brown and grey fur flecked with black, a white belly and white chin, long powerful hind legs, large round amber eyes, long whiskers, a confident, cocky expression",
+      "short": "Tinchel the rabbit: slender Ethiopian highland hare, long black-tipped upright ears, sandy-brown and grey fur, white belly, long hind legs, large amber eyes"
     },
     {
-      "id": "liya",
-      "name": "Liya (granddaughter, age 10)",
-      "description": "Liya, Etenesh's 10-year-old granddaughter, an Ethiopian Habesha girl: slim, warm brown skin, oval face, high cheekbones, slim nose, big bright dark almond-shaped eyes; black hair in neat shuruba cornrow braids running from the forehead to the back of the head, gathered in a small bun; mustard-yellow knitted cardigan over a simple white cotton habesha dress with a narrow tibeb border",
+      "id": "tortoise",
+      "name": "Eli (the tortoise)",
       "real_person": false,
-      "ref_seed": 2202,
-      "short": "Liya: 10-year-old Ethiopian Habesha girl, warm brown skin, oval face, big dark almond-shaped eyes, black shuruba cornrow braids in a small bun, mustard-yellow cardigan over a white habesha dress"
+      "ref_seed": 4202,
+      "description": "Eli, an old leopard tortoise: a high domed shell patterned with cream and dark brown blotches, the edges of the shell worn smooth with age, thick wrinkled grey-brown scaly legs with short claws, a small wise face with calm dark eyes and a slightly hooked beak",
+      "short": "Eli the tortoise: old leopard tortoise, high domed shell with cream and dark brown blotches, wrinkled grey-brown legs, small wise face with calm dark eyes"
     }
   ],
   "voice": {
     "name": "Kore",
-    "style": "Speak slowly and warmly, like a woman remembering her grandmother. Calm, unhurried, intimate.",
+    "style": "Tell this like a warm grandparent telling a children's fable: clear, lively and kind, with gentle humour; a little proud and quick for the rabbit's words, slow and calm for the tortoise's.",
     "cloned": false
   },
   "shots": [
     {
       "id": "s01",
-      "beat": "Where we are",
-      "reason": "Establishing shot: the audience must know this is a highland village at dawn before we meet anyone.",
+      "beat": "The hills",
+      "reason": "Establishing shot: the place and, through the path and the far tree, the race course and its finish before we meet anyone.",
       "shot_size": "extreme_wide",
       "duration_s": 6,
       "characters": [],
-      "image_prompt": "Extreme wide establishing shot at dawn of a small village in the Ethiopian highlands: round tukul houses with mud walls and conical thatched roofs, a dirt path, tall eucalyptus trees, terraced green hills and distant blue mountains under low morning mist; one thin line of grey wood smoke rising from the roof of the nearest tukul; pale gold light on the horizon. No people. Eye level, 24mm lens, deep focus",
+      "image_prompt": "Extreme wide establishing shot at sunrise over the green Ethiopian highlands: rolling hills, a winding red dirt path running from the foreground into the distance, a single huge old warka fig tree standing on the far hilltop where the path ends, flat-topped acacia trees, wildflowers, distant blue mountains under thin morning mist. No animals visible. Eye level, 24mm lens, deep focus",
       "seed": 11,
       "motion": {
         "mode": "wan",
         "kenburns": "pan_right",
-        "video_prompt": "slow cinematic pan to the right, mist drifts gently over the hills, the thin line of smoke rises, nothing else moves"
+        "video_prompt": "slow cinematic pan to the right across the hills, mist drifts gently, grass sways, nothing else moves"
       },
       "narration": {
-        "en": "In my grandmother's village, the day began before the sun."
+        "en": "Long ago, in the green hills, there lived a rabbit who was very fast, and a tortoise who was very slow.",
+        "spoken": "ድሮ ድሮ፣ በአረንጓዴዎቹ ኮረብቶች ላይ በጣም ፈጣን ጥንቸልና በጣም ቀርፋፋ ኤሊ ይኖሩ ነበር።",
+        "locked": true
       }
     },
     {
       "id": "s02",
-      "beat": "Meet her",
-      "reason": "Medium shot introduces Etenesh doing the ritual, so the first face we see is tied to the coffee.",
+      "beat": "The boaster",
+      "reason": "Introduces the rabbit and his flaw, pride, in one image: high on the rock, looking down.",
       "shot_size": "medium",
       "duration_s": 7,
       "characters": [
-        "etenesh"
+        "rabbit"
       ],
-      "image_prompt": "Medium shot inside a dim traditional tukul at dawn. Etenesh sits on a low carved wooden stool, leaning slightly forward, roasting pale green coffee beans in a long-handled flat black iron pan resting on a small clay charcoal brazier on the floor in front of her; her left hand steadies the pan's long handle and her right hand stirs the beans with a short metal rod. Freshly cut green grass and a few yellow meskel daisies are scattered on the earthen floor; a black clay jebena coffee pot stands on a woven straw ring beside the brazier; a small clay incense burner sends up a thin thread of frankincense smoke. Orange ember light on her face, soft daylight from the doorway behind her. Eye level, 35mm lens",
+      "image_prompt": "Medium shot. Tinchel the rabbit sits up tall on his hind legs on top of a flat grey rock beside the red dirt path, chest puffed out, ears straight up, looking down with a proud, mocking look; behind him the green hills in soft focus. Morning light from the side, 85mm lens, eye level with the rabbit",
       "seed": 22,
       "motion": {
         "mode": "kenburns",
         "kenburns": "zoom_in"
       },
       "narration": {
-        "en": "Every morning, Etenesh roasted coffee over charcoal, the way her mother taught her."
+        "en": "The rabbit loved to laugh at the others. 'No one in these hills can beat me,' he said.",
+        "spoken": "ጥንቸሉ በሌሎች መሳቅ ይወድ ነበር። «በእነዚህ ኮረብቶች ውስጥ ማንም ሊያሸንፈኝ አይችልም» አለ።",
+        "locked": true
       }
     },
     {
       "id": "s03",
-      "beat": "The senses",
-      "reason": "Close-up on the beans gives the sound and smell a picture; it is the detail people remember.",
+      "beat": "The challenge",
+      "reason": "Low angle on the tortoise answers the high angle on the rabbit: the small one accepts the challenge calmly.",
       "shot_size": "close_up",
-      "duration_s": 6,
-      "characters": [],
-      "image_prompt": "Extreme close-up from a high three-quarter angle of coffee beans roasting in a flat black iron pan over glowing charcoal: the beans are turning from pale green to glossy dark brown, a few cracked open, thin curls of white smoke rising; a short metal stirring rod lies across the rim of the pan. Ember glow from below, dark warm background, macro lens, shallow depth of field. No people",
+      "duration_s": 7,
+      "characters": [
+        "tortoise"
+      ],
+      "image_prompt": "Close-up of Eli the tortoise standing on the red dirt path at the foot of the rock, her head stretched out and tilted up toward the camera, calm dark eyes, a patient, quietly determined expression; low angle at ground level, grass blades in the soft foreground, warm morning light, 100mm macro lens",
       "seed": 33,
       "motion": {
-        "mode": "wan",
-        "kenburns": "zoom_in",
-        "video_prompt": "the beans shift slightly, curls of smoke rise slowly, embers pulse softly, static macro camera"
+        "mode": "kenburns",
+        "kenburns": "zoom_in"
       },
       "narration": {
-        "en": "She said you could hear when the beans were ready. They crackle, like they are laughing."
+        "en": "The tortoise looked up and said quietly, 'Then let us race, to the big warka tree.'",
+        "spoken": "ኤሊዋ ቀና ብላ በለሆሳስ «እንግዲያው እስከ ትልቁ የዋርካ ዛፍ ድረስ እንሽቀዳደም» አለች።",
+        "locked": true
       }
     },
     {
       "id": "s04",
-      "beat": "Sharing the smoke",
-      "reason": "Introduces Liya and the first contact between the two: the smoke is passed to her.",
-      "shot_size": "medium",
+      "beat": "The start",
+      "reason": "The whole contrast of the film in one frame: one is already flying, the other has barely moved. Local animals as the crowd.",
+      "shot_size": "wide",
       "duration_s": 7,
       "characters": [
-        "etenesh",
-        "liya"
+        "rabbit",
+        "tortoise"
       ],
-      "image_prompt": "Medium shot inside the warm tukul. Grandmother Etenesh stands and holds the flat iron pan of freshly roasted dark coffee beans by its long handle with both hands, at chest height, bringing it close to her granddaughter Liya, who sits on a low stool; Liya waves one open hand above the pan to bring the rising fragrant vapour toward her face, eyes open and bright, smiling up at her grandmother. Thin grey wisps rise from the hot beans. Green grass on the floor, warm firelight, soft daylight from the doorway. Both upper bodies fully visible, eye level, 35mm lens",
+      "image_prompt": "Wide shot at the start of the race on the red dirt path: a line of small white stones laid across the path as the start line; Tinchel the rabbit already leaping forward from the line in mid-sprint, all four paws off the ground, a puff of red dust behind him; Eli the tortoise just behind the line taking her first slow step. On both sides of the path, watching: a family of gelada monkeys sitting on rocks, a thick-billed raven and a few highland birds. Morning light, eye level, 35mm lens",
       "seed": 44,
       "motion": {
         "mode": "kenburns",
         "kenburns": "pan_left"
       },
       "narration": {
-        "en": "She carried the smoke around the room, so everyone could greet it."
+        "en": "All the animals came to watch. The rabbit laughed. And the race began.",
+        "spoken": "እንስሳት ሁሉ ሊመለከቱ መጡ። ጥንቸሉ ሳቀ። ውድድሩም ተጀመረ።",
+        "locked": true
       }
     },
     {
       "id": "s05",
-      "beat": "The hands",
-      "reason": "Close-up on old hands grinding: years of repetition shown, not told.",
-      "shot_size": "close_up",
+      "beat": "Far ahead",
+      "reason": "Shows the distance between them, which is what makes the rabbit careless.",
+      "shot_size": "medium",
       "duration_s": 7,
       "characters": [
-        "etenesh"
+        "rabbit"
       ],
-      "image_prompt": "Close-up of Etenesh's weathered, wrinkled brown hands grinding roasted coffee: a deep carved wooden mortar stands on the earthen floor, her left hand holds its rim steady, her right hand grips a heavy iron pestle upright and presses it down into the dark roasted beans; dark coffee grounds visible inside the mortar; the edge of her white netela with its green-yellow-red tibeb border falls over her wrist. Warm side light from the fire, 85mm lens, shallow depth of field",
+      "image_prompt": "Medium shot. Tinchel the rabbit stands far along the red dirt path between acacia trees, glancing back over his shoulder with a smug look; far behind him, very small in the distance on the empty path, the tortoise is a tiny dark dot. Midday sun, heat haze over the path, 70mm lens, eye level with the rabbit",
       "seed": 55,
+      "motion": {
+        "mode": "wan",
+        "kenburns": "zoom_out",
+        "video_prompt": "the rabbit turns his head back over his shoulder, ears twitch, heat haze shimmers over the path, static camera"
+      },
+      "narration": {
+        "en": "In a moment, the rabbit was far ahead. He looked back, and the tortoise was only a small dot.",
+        "spoken": "ጥንቸሉ በቅጽበት በጣም ቀደመ። ወደ ኋላ ቢመለከት ኤሊዋ ትንሽ ነጥብ ብቻ ሆና ታየች።",
+        "locked": true
+      }
+    },
+    {
+      "id": "s06",
+      "beat": "The nap",
+      "reason": "The mistake: the rabbit stops because he underestimates the tortoise. The calm image makes the danger funny.",
+      "shot_size": "medium",
+      "duration_s": 8,
+      "characters": [
+        "rabbit"
+      ],
+      "image_prompt": "Medium shot. Tinchel the rabbit lies stretched out asleep on his side in the cool shade of a flat-topped acacia tree right beside the red dirt path, eyes shut, ears folded back along his body, relaxed and comfortable; dappled sunlight on the grass, a butterfly resting on a flower near his nose; the empty path continues behind him toward the far hilltop. Warm afternoon light, 50mm lens, low camera at ground level",
+      "seed": 66,
       "motion": {
         "mode": "kenburns",
         "kenburns": "zoom_in"
       },
       "narration": {
-        "en": "I watched her hands. Hands that had done this ten thousand times."
-      }
-    },
-    {
-      "id": "s06",
-      "beat": "The first cup",
-      "reason": "The high pour from the jebena is the iconic image of the ceremony and the visual peak of the first half.",
-      "shot_size": "medium_close_up",
-      "duration_s": 6,
-      "characters": [
-        "etenesh"
-      ],
-      "image_prompt": "Medium close-up, side view. Etenesh kneels by a low wooden coffee tray and pours coffee from a black clay jebena: she holds the jebena by its handle in her right hand, raised about a hand's length above the cups, the spout tilted down, and a thin unbroken stream of dark coffee falls straight down into the first cup. Six small white handleless porcelain cups stand upright in two neat rows on the tray directly below the spout; steam rises from the filled cups. Warm firelight, dark background, 50mm lens, focus on the spout, the stream and the cup",
-      "seed": 66,
-      "motion": {
-        "mode": "wan",
-        "kenburns": "zoom_out",
-        "video_prompt": "the thin stream of coffee falls steadily into the small cup, steam rises, her hand stays still, static camera"
-      },
-      "narration": {
-        "en": "The first cup is called abol. Strong, like the morning."
+        "en": "'I have plenty of time,' he thought. He lay down in the shade beside the road, and fell asleep.",
+        "spoken": "«ብዙ ጊዜ አለኝ» ብሎ አሰበ። ከመንገዱ ዳር ጥላ ስር ተኝቶ እንቅልፍ ወሰደው።",
+        "locked": true
       }
     },
     {
       "id": "s07",
-      "beat": "The handover",
-      "reason": "Turning point: the grandmother passes the jebena to Liya. The line of dialogue carries the theme.",
+      "beat": "Step by step",
+      "reason": "The film's lesson shown, not told: steady steps. Close and low so the slow walk feels determined, not weak.",
       "shot_size": "close_up",
-      "duration_s": 9,
+      "duration_s": 7,
       "characters": [
-        "etenesh",
-        "liya"
+        "tortoise"
       ],
-      "image_prompt": "Close-up at the low wooden coffee tray. Liya kneels beside her grandmother and holds the black clay jebena by its handle with both small hands, tilting it carefully so a thin stream of coffee pours from the spout into one small white handleless cup that stands upright on the tray; Etenesh's old hand rests lightly under the jebena's round base, helping her hold the angle. Both faces visible above the hands: Etenesh watching with a proud smile, Liya concentrating. Warm firelight, 50mm lens, focus on the hands, the spout and the cup",
+      "image_prompt": "Close-up at ground level of Eli the tortoise walking steadily along the red dirt path toward the camera: one front leg lifted mid-step, claws about to touch the dust, the other three legs planted firmly, head forward, eyes fixed on the road ahead; small footprints in the dust behind her; hot afternoon sun, heat haze, 100mm macro lens, shallow depth of field",
       "seed": 77,
       "motion": {
         "mode": "kenburns",
         "kenburns": "zoom_in"
       },
       "narration": {
-        "en": "One day she put the jebena in my hands. Slowly, she said. Coffee is not about the coffee."
+        "en": "The tortoise did not stop. One step, then another, all through the hot afternoon.",
+        "spoken": "ኤሊዋ አላቆመችም። አንድ እርምጃ፣ ከዚያም ሌላ፣ በሞቃቱ ከሰዓት በኋላ ሁሉ።",
+        "locked": true
       }
     },
     {
       "id": "s08",
-      "beat": "What it is really about",
-      "reason": "Wide shot answers her line: the neighbours who come. The film's meaning is the people.",
-      "shot_size": "wide",
+      "beat": "Passing by",
+      "reason": "The turning point: both characters in one frame as the lead changes hands.",
+      "shot_size": "medium",
       "duration_s": 7,
       "characters": [
-        "etenesh",
-        "liya"
+        "rabbit",
+        "tortoise"
       ],
-      "image_prompt": "Wide shot inside the tukul, morning light through the open door. Etenesh and three neighbours (an old man wrapped in a white gabi shawl, a middle-aged woman in a white netela, a young man in a plain shirt) sit on low stools in a half circle around the low wooden coffee tray, where the black jebena stands on its straw ring; each adult holds one small white handleless cup upright at chest height with the fingertips. Liya stands and carries one small cup with both hands to the old man, serving the eldest first. A woven basket of popcorn and a bowl of roasted barley on the floor, green grass on the floor; everyone talking and laughing. Eye level, 28mm lens, all faces visible",
+      "image_prompt": "Medium shot beside the acacia tree: in the foreground Tinchel the rabbit still lies asleep on his side in the shade, eyes shut; on the red dirt path just behind him, Eli the tortoise walks past in profile, steady and quiet, heading toward the far hilltop; both animals in sharp focus. Late afternoon golden light, long shadows, 35mm lens, low camera",
       "seed": 88,
       "motion": {
         "mode": "kenburns",
         "kenburns": "pan_right"
       },
       "narration": {
-        "en": "It is about who comes to sit with you."
+        "en": "Slowly, quietly, she walked past the sleeping rabbit.",
+        "spoken": "ቀስ ብላ፣ በጸጥታ፣ ከተኛው ጥንቸል አጠገብ አልፋ ሄደች።",
+        "locked": true
       }
     },
     {
       "id": "s09",
-      "beat": "Now",
-      "reason": "The empty stool tells us she is gone without saying it; the narrator now keeps the ritual alive.",
-      "shot_size": "medium",
-      "duration_s": 9,
-      "characters": [],
-      "image_prompt": "Medium shot of a small modern apartment kitchen far from Ethiopia at dawn: cool blue light through a window with a view of city rooftops, against the warm glow of a small electric stove where a flat iron pan of coffee beans is roasting, a thin wisp of grey smoke rising toward the window. Beside the stove stands an empty low carved wooden stool; folded on its seat lies a white netela shawl with a green-yellow-red tibeb border; a black clay jebena stands on a straw ring on the counter. No people. Eye level, 35mm lens",
+      "beat": "The finish",
+      "reason": "The payoff: the winner and the loser in one frame, so the audience sees the result before it is said.",
+      "shot_size": "wide",
+      "duration_s": 8,
+      "characters": [
+        "rabbit",
+        "tortoise"
+      ],
+      "image_prompt": "Wide shot at the finish at sunset: the huge old warka fig tree on the hilltop with the red dirt path ending at its roots; Eli the tortoise has just arrived under the tree, while gelada monkeys and birds around her cheer; far down the path behind her, Tinchel the rabbit sprints uphill in panic, ears flat back, a trail of red dust, too late. Orange sunset light, long shadows, 28mm lens, eye level",
       "seed": 99,
+      "motion": {
+        "mode": "wan",
+        "kenburns": "zoom_out",
+        "video_prompt": "the rabbit sprints uphill far in the background kicking up dust, the monkeys bounce and wave, leaves stir, static camera"
+      },
+      "narration": {
+        "en": "When the rabbit woke up, he ran as fast as he could. But the tortoise was already at the tree.",
+        "spoken": "ጥንቸሉ ሲነቃ የቻለውን ያህል ሮጠ። ኤሊዋ ግን ቀድማ ዛፉ ጋ ደርሳ ነበር።",
+        "locked": true
+      }
+    },
+    {
+      "id": "s10",
+      "beat": "The lesson",
+      "reason": "Resolution: the proud one is humbled, and the Amharic proverb gives the moral a local voice.",
+      "shot_size": "medium_close_up",
+      "duration_s": 9,
+      "characters": [
+        "rabbit",
+        "tortoise"
+      ],
+      "image_prompt": "Medium close-up under the warka tree at dusk: Eli the tortoise rests calmly among the big tree roots, a few small yellow meskel daisies beside her; Tinchel the rabbit sits in front of her, out of breath, ears drooping, head lowered, humble; the two face each other. Soft warm dusk light, 50mm lens, low camera at the animals' eye level",
+      "seed": 110,
       "motion": {
         "mode": "kenburns",
         "kenburns": "zoom_out"
       },
       "narration": {
-        "en": "Now I roast coffee far from home. And every morning, the smoke still finds me. So does she.",
-        "lead_in_s": 0.8
+        "en": "Slow and steady wins the race. As the elders say: little by little, even an egg learns to walk.",
+        "spoken": "ቀስ ብሎ የማያቋርጥ ያሸንፋል። አበው እንዳሉት፦ ቀስ በቀስ እንቁላል በእግሩ ይሄዳል።",
+        "locked": true
       }
     }
   ],
   "music": {
-    "caption": "gentle Ethiopian-inspired instrumental underscore, warm plucked lyre in the style of a krar, soft hand drum, slow melancholic tizita mood, sparse and intimate, soft pads, no lead melody, nostalgic, acoustic, instrumental",
-    "bpm": 72,
-    "key": "C minor",
+    "caption": "playful Ethiopian-inspired instrumental for a children's fable, plucked krar, masenqo fiddle, light kebero hand drum, bright pentatonic melody, gentle comic pizzicato, a drowsy lullaby passage, building to a warm triumphant ending, acoustic, instrumental",
+    "bpm": 96,
+    "key": "D major",
     "duration_s": 90,
     "candidates": 3,
     "seeds": [
@@ -259,15 +302,23 @@
     "cues": [
       {
         "at_shot": "s01",
-        "intent": "enter softly from silence, establish warmth"
+        "intent": "open softly, morning in the hills"
       },
       {
-        "at_shot": "s07",
-        "intent": "lift slightly at the handover"
+        "at_shot": "s04",
+        "intent": "quick playful race theme as the rabbit sprints"
+      },
+      {
+        "at_shot": "s06",
+        "intent": "slow drowsy lullaby while the rabbit sleeps"
+      },
+      {
+        "at_shot": "s08",
+        "intent": "tiptoe pizzicato as the tortoise passes"
       },
       {
         "at_shot": "s09",
-        "intent": "thin out, let the last line breathe, resolve into the end card"
+        "intent": "build and lift to a warm triumphant finish, resolve into the end card"
       }
     ]
   },
@@ -278,7 +329,7 @@
       "Motion: Wan 2.2 / FFmpeg",
       "Voice: Gemini TTS (synthetic voice)",
       "Music: ACE-Step 1.5",
-      "A fictional story inspired by Ethiopian coffee ceremonies"
+      "A retelling of Aesop's fable The Tortoise and the Hare"
     ],
     "duration_s": 3
   },

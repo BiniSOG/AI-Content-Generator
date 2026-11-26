@@ -10,7 +10,7 @@ STAGE = "script"
 
 PROMPT = """You are translating narration for a short film into {lang}.
 Translate the line below into natural, spoken {lang} that a native speaker would say aloud.
-Keep it short and easy to speak. Keep names (Etenesh, Liya) and the words jebena and abol as they are.
+Keep it short and easy to speak. Keep these names as they are: {names}.
 Return ONLY the translated line, with no quotes, notes or transliteration.
 
 Full script for context:
@@ -40,7 +40,8 @@ def run(sb: dict | None = None, only: set[str] | None = None) -> list[str]:
         if n.get("locked") or (n.get("spoken") and n.get("spoken_source_hash") == key):
             continue
         say(STAGE, f"{s['id']}: translating to {lang_name}")
-        n["spoken"] = gemini_text(PROMPT.format(lang=lang_name, context=context, line=n["en"]),
+        names = ", ".join(c["name"].split(" (")[0] for c in sb["characters"])
+        n["spoken"] = gemini_text(PROMPT.format(lang=lang_name, context=context, line=n["en"], names=names),
                                   model=model, stage=STAGE, shot=s["id"], cache_key=key)
         n["spoken_source_hash"] = key
         changed.append(s["id"])

@@ -12,39 +12,41 @@
 
 ### Constraints that shaped the design
 - 60–90 s, which is about 130–170 words of narration once Amharic runs longer than English.
-- One place and two characters, to limit consistency problems.
-- A stylised, hand-painted look: it's kinder to identity drift than photorealism, and it isn't anyone's likeness.
+- One place (the race path) and two characters, to limit consistency problems.
+- A nature-documentary look with realistic animals: image models draw animals far more consistently than people, and no one's likeness is involved.
 - No real person is depicted or voiced (see ETHICS.md).
 - GPU quota: Wan 2.2 only on 3 hero shots, Ken Burns elsewhere.
 
 ## 2. Story
 
-**Logline:** A woman far from home remembers how her grandmother taught her the coffee ceremony, and learns that it was never about the coffee.
+**Logline:** In the Ethiopian highlands, a boastful rabbit challenges a slow tortoise to a race, naps halfway because he is sure he will win, and wakes to find the tortoise has already reached the finish.
+
+A retelling of Aesop's fable *The Tortoise and the Hare*, set in the Ethiopian highlands with animals native to them (an Ethiopian highland hare, a leopard tortoise, gelada monkeys), narrated in Amharic, and closed with the Amharic proverb ቀስ በቀስ እንቁላል በእግሩ ይሄዳል ("little by little, even an egg learns to walk").
 
 **Beats:**
-1. Place (s01)
-2. The ritual and the person (s02–s03)
-3. Sharing (s04)
-4. Repetition, years in the hands (s05)
-5. The first cup (s06)
-6. The handover and its meaning (s07–s08)
-7. Absence and continuity (s09)
+1. Place and the race course: the path and the far warka tree (s01)
+2. The boast and the challenge (s02–s03)
+3. The start: one flies, one barely moves (s04)
+4. Overconfidence: far ahead, then the nap (s05–s06)
+5. Steady steps, and the pass (s07–s08)
+6. The finish and the lesson (s09–s10)
 
-**Motif:** the coffee smoke. It is greeted in s04, and it "still finds me" in s09.
+**Motif:** the warka tree. It is the far dot in s01, the finish in s09, and the shelter where the rabbit is humbled in s10.
 
 ## 3. Why every shot exists
 
 | Shot | Size | Reason |
 |---|---|---|
-| s01 | extreme wide | Establishing shot: the audience must know this is a highland village at dawn before we meet anyone. |
-| s02 | medium | Introduces Etenesh doing the ritual, so the first face we see is tied to the coffee. |
-| s03 | close-up | The beans give the sound and smell a picture; it is the detail people remember. |
-| s04 | medium | Introduces Liya and the first contact between the two: the smoke is passed to her. |
-| s05 | close-up | Old hands grinding: years of repetition shown, not told. |
-| s06 | medium close-up | The high pour from the jebena is the iconic image of the ceremony and the visual peak of the first half. |
-| s07 | close-up | Turning point: the jebena is passed on; the line of dialogue carries the theme. |
-| s08 | wide | Answers her line: the neighbours who come. The film's meaning is the people. |
-| s09 | medium | The empty stool says she is gone without saying it; the narrator keeps the ritual alive. |
+| s01 | extreme wide | Establishing shot: the place and, through the path and the far tree, the race course and its finish before we meet anyone. |
+| s02 | medium | Introduces the rabbit and his flaw, pride, in one image: high on the rock, looking down. |
+| s03 | close up | Low angle on the tortoise answers the high angle on the rabbit: the small one accepts the challenge calmly. |
+| s04 | wide | The whole contrast of the film in one frame: one is already flying, the other has barely moved. Local animals as the crowd. |
+| s05 | medium | Shows the distance between them, which is what makes the rabbit careless. |
+| s06 | medium | The mistake: the rabbit stops because he underestimates the tortoise. The calm image makes the danger funny. |
+| s07 | close up | The film's lesson shown, not told: steady steps. Close and low so the slow walk feels determined, not weak. |
+| s08 | medium | The turning point: both characters in one frame as the lead changes hands. |
+| s09 | wide | The payoff: the winner and the loser in one frame, so the audience sees the result before it is said. |
+| s10 | medium close up | Resolution: the proud one is humbled, and the Amharic proverb gives the moral a local voice. |
 
 (These reasons are also stored in `storyboard.json` as `shots[].reason`, so they can't drift from the plan.)
 

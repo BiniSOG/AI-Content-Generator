@@ -66,7 +66,8 @@ calls.clear(); full_run()
 assert calls == [], f"second run should be fully cached, got {calls}"
 
 sb = json.loads((tmp / "storyboard.json").read_text())
-sb["shots"][3]["narration"]["en"] = "She carried the smoke slowly around the room, so everyone could greet it."
+sb["shots"][3]["narration"]["en"] = sb["shots"][3]["narration"]["en"] + " Off they went!"
+sb["shots"][3]["narration"].pop("locked", None)  # a locked line is never re-translated
 (tmp / "storyboard.json").write_text(json.dumps(sb, ensure_ascii=False, indent=2))
 calls.clear(); full_run()
 assert sorted(calls) == [("text", "s04"), ("tts", "s04")], calls

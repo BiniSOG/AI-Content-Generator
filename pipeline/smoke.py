@@ -26,10 +26,10 @@ def run() -> None:
         ("gemini tts", lambda: gemini_tts("ሰላም፣ እንኳን ደህና መጡ።" if sb["language"]["narration"] == "am" else "Hello.",
                                           model=sb["models"]["tts"], voice=sb.get("voice", {}).get("name", "Kore"),
                                           style=None, out_wav=d / "tts.wav", stage="smoke")),
-        ("cloudflare image", lambda: cf_image("a clay coffee pot on a wooden table, " + sb["style"]["block"],
+        ("cloudflare image", lambda: cf_image("a tortoise walking on a red dirt path, " + sb["style"]["block"],
                                               model=sb["models"]["image"], seed=1, out_png=d / "image.png",
                                               width=512, height=512, stage="smoke")),
-        ("cloudflare image_alt", lambda: cf_image("a clay coffee pot on a wooden table",
+        ("cloudflare image_alt", lambda: cf_image("a tortoise walking on a red dirt path",
                                                   model=sb["models"]["image_alt"], seed=1, out_png=d / "image_alt.png",
                                                   width=512, height=512, stage="smoke")),
     ]
@@ -51,7 +51,7 @@ def _diagnose_flag(sb: dict, d) -> str:
     """FLUX.2 output was flagged on every seed. One extra call without the style block tells
     whether the style text is the trigger or the model/filter itself."""
     try:
-        cf_image("a clay coffee pot on a wooden table", model=sb["models"]["image"], seed=1,
+        cf_image("a tortoise walking on a red dirt path", model=sb["models"]["image"], seed=1,
                  out_png=d / "image_bare.png", width=512, height=512, stage="smoke")
         return ("-> the SAME prompt WITHOUT style.block passed, so a phrase in style.block is the trigger. "
                 "Reword style.block in storyboard.json (see FAILURES.md F05).")
